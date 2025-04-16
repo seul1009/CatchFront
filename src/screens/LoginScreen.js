@@ -7,7 +7,8 @@ import { useNavigation } from "@react-navigation/native";
 import Logo from "../components/Logo";
 import LoginEmailIcon from "../assets/img/login_email_icon.png";
 import LoginPasswordIcon from "../assets/img/login_password_icon.png";
-
+import KakaoLoginButton from "../components/KakaoLoginButton";
+ 
 const LoginScreen = () => {
   const navigation = useNavigation();
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -19,6 +20,7 @@ const LoginScreen = () => {
 
   const handleSubmit = async () => {
     try {
+      console.log("로그인 시도 데이터:", formData);
       const response = await axios.post("http://192.168.0.4:8080/auth/login", formData, {
         headers: { "Content-Type": "application/json" },
       });
@@ -76,6 +78,8 @@ const LoginScreen = () => {
       <Button onPress={() => navigation.navigate("Signup")}>
         <ButtonText>회원가입</ButtonText>
       </Button>
+
+      <KakaoLoginButton/>
     </View>
   );
 };

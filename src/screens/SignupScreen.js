@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import styled from "styled-components/native";
-import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Image  } from "react-native";
+import { useNavigation } from '@react-navigation/native';
 import Logo from "../components/Logo";
 import emailIcon from "../assets/img/email_icon.png";
 import emailCheckIcon from "../assets/img/checkEmail_icon.png";
@@ -35,7 +36,7 @@ const FormTop = styled.View`
   flex-direction: column;
   align-items: flex-start;
   align-self: center;
-  padding-left: 5px;
+  padding-left: 5px;tmfdlt
 `;
 
 const FormBottom = styled.View`
@@ -92,6 +93,7 @@ const ErrorMessage = styled.Text`
 `;
 
 const SignupScreen = () => {
+  const navigation = useNavigation();
   const [formData, setFormData] = useState({
     email: "",
     confirmCode: "",
@@ -148,6 +150,7 @@ const SignupScreen = () => {
         password: formData.password
       });
       alert("회원가입이 성공적으로 완료되었습니다!");
+      navigation.navigate("Login");
     } catch (error) {
       console.error("회원가입 실패:", error);
       if (error.response && error.response.data) {

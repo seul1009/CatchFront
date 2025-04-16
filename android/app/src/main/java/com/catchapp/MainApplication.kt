@@ -11,15 +11,17 @@ import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.react.soloader.OpenSourceMergedSoMapping
 import com.facebook.soloader.SoLoader
+import com.dooboolab.kakaologins.RNKakaoLoginsPackage
 
 class MainApplication : Application(), ReactApplication {
 
   override val reactNativeHost: ReactNativeHost =
       object : DefaultReactNativeHost(this) {
-        override fun getPackages(): List<ReactPackage> =
-            PackageList(this).packages.apply {
-              // Packages that cannot be autolinked yet can be added manually here, for example:
-              // add(MyReactNativePackage())
+            override fun getPackages(): List<ReactPackage> =
+                PackageList(this).packages.toMutableList().apply {
+                    // Packages that cannot be autolinked yet can be added manually here, for example:
+                    // add(MyReactNativePackage())
+                    add(RNKakaoLoginsPackage()) // 카카오 로그인 패키지 추가
             }
 
         override fun getJSMainModuleName(): String = "index"
