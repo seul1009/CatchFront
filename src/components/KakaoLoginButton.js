@@ -12,7 +12,7 @@ const KakaoLoginButton = () => {
     try {
 
       const result = await KakaoLogin.login();
-      const token = result.accessToken;
+      const accessToken = result.accessToken;
 
       if (!accessToken) throw new Error("accessToken 없음");
 
