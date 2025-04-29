@@ -154,6 +154,7 @@ const SignupScreen = () => {
     } catch (error) {
       console.error("회원가입 실패:", error);
       if (error.response && error.response.data) {
+        
         // 객체 형태로 응답이 온 경우 (message 필드가 있는지 확인)
         if (typeof error.response.data === 'object' && error.response.data.message) {
           setErrorMessage(error.response.data.message);

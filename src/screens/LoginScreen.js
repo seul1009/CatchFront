@@ -7,7 +7,7 @@ import Logo from "../components/Logo";
 import LoginEmailIcon from "../assets/img/login_email_icon.png";
 import LoginPasswordIcon from "../assets/img/login_password_icon.png";
  
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = ({ navigation, setIsLoggedIn }) => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -23,10 +23,7 @@ const LoginScreen = ({ navigation }) => {
 
       if (response.data.token) {
         await AsyncStorage.setItem("token", response.data.token);
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "Home" }],
-        });
+        setIsLoggedIn(true);
       } else {
         throw new Error("토큰이 응답에 없습니다.");
       }
@@ -38,7 +35,9 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.logoWrapper}>
         <Logo color="white" />
+      </View>
 
       <View style={styles.inputContainer}>
         <Image source={LoginEmailIcon} style={styles.icon} />
@@ -103,11 +102,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#355DFF",
     padding: 20,
   },
-  title: {
-    fontSize: 24,
-    color: "white",
-    fontWeight: "bold",
-    marginBottom: 20,
+  logoWrapper: {
+    marginBottom:50,
   },
   inputContainer: {
     flexDirection: "row",
@@ -115,7 +111,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 5,
     paddingHorizontal: 10,
-    marginBottom: 15,
+    marginBottom: 10,
     width: 250,
   },
   icon: {

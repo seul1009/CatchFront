@@ -12,7 +12,7 @@ function Header() {
 const styles = StyleSheet.create({
     header: {
         width: '100%',
-        paddingVertical: 10,
+        paddingVertical: 20,
         fontSize: 24,
         fontWeight: 'bold',
         borderBottomWidth: 1,
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     logo: {
         color: '#355DFF',
         paddingLeft: 20,
-        paddingTop: 10,
+        paddingTop: 13,
         fontSize: 30,
         fontWeight: '700',
     }
