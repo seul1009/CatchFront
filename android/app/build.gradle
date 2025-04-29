@@ -1,6 +1,8 @@
-apply plugin: "com.android.application"
-apply plugin: "org.jetbrains.kotlin.android"
-apply plugin: "com.facebook.react"
+plugins {
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("com.facebook.react")
+}
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 
@@ -116,9 +118,6 @@ project.ext.react = [
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
-    implementation project(':react-native-seoul-kakao-login')
-
-    implementation "com.kakao.sdk:v2-user:2.15.0"
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
@@ -131,5 +130,4 @@ dependencies {
 repositories {
     google()
     mavenCentral()
-    maven { url 'https://devrepo.kakao.com:8088/nexus/content/groups/public/'}
 }
