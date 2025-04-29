@@ -3,14 +3,11 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } fro
 import axios from "axios";
 import styled from "styled-components/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useNavigation } from "@react-navigation/native";
 import Logo from "../components/Logo";
 import LoginEmailIcon from "../assets/img/login_email_icon.png";
 import LoginPasswordIcon from "../assets/img/login_password_icon.png";
  
-
-const LoginScreen = () => {
-  const navigation = useNavigation();
+const LoginScreen = ({ navigation }) => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -26,7 +23,10 @@ const LoginScreen = () => {
 
       if (response.data.token) {
         await AsyncStorage.setItem("token", response.data.token);
-        navigation.navigate("Home");
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "Home" }],
+        });
       } else {
         throw new Error("토큰이 응답에 없습니다.");
       }
@@ -70,9 +70,9 @@ const LoginScreen = () => {
         <Text style={styles.buttonText}>로그인</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
+      {/* <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
         <Text style={styles.linkText}>비밀번호를 잊으셨나요?</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <Button onPress={() => navigation.navigate("Signup")}>
         <ButtonText>회원가입</ButtonText>
