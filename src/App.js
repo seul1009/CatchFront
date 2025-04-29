@@ -1,23 +1,21 @@
-import React, { useEffect }  from 'react';
+import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import LoginScreen from './screens/LoginScreen'; 
-import SignupScreen from './screens/SignupScreen';  
-import HomeScreen from './screens/HomeScreen';  
+import StackNavigator from '../src/navigation/StackNavigator';
+import { StatusBar } from 'react-native';
 
-const Stack = createStackNavigator();
-
-function App() {
+export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Signup" component={SignupScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <>
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor="#ffffff"
+        hidden={false}
+        />
+        <NavigationContainer>
+        <StackNavigator isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+        </NavigationContainer>
+    </>
   );
 }
-
-export default App;
