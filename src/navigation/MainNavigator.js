@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -21,13 +22,16 @@ function MainTabs() {
   );
 }
 
-export default function MainNavigator({ isLoggedIn }) {
+
+export default function MainNavigator({ isLoggedIn, setIsLoggedIn }) {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {isLoggedIn ? (
         <Stack.Screen name="MainTabs" component={MainTabs} />
       ) : (
-        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Login">
+          {() => <LoginScreen setIsLoggedIn={setIsLoggedIn} />}
+        </Stack.Screen>
       )}
     </Stack.Navigator>
   );

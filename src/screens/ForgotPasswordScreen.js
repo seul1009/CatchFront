@@ -18,7 +18,7 @@ const ForgotPasswordScreen = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:8080/api/forgot-password', { email });
+            const response = await axios.post('http://192.168.0.4:8080/api/forgot-password', { email });
             setSuccessMessage('이메일로 비밀번호 재설정 링크가 전송되었습니다.');
             setErrorMessage('');
         } catch (error) {

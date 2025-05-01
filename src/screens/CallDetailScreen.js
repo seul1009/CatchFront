@@ -1,37 +1,73 @@
 import React, { useEffect, useState } from 'react';
-import { Button, View, Text } from 'react-native';
-import { useRoute, useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
+import axios from 'axios';
+import { useRoute } from '@react-navigation/native';
 
 function CallDetailScreen() {
-    const { id } = useRoute().params;
-    const [callDetail, setCallDetail] = useState(null);
-    const navigation = useNavigation();
+  const route = useRoute();
+  const { id } = route.params;
+  const [messages, setMessages] = useState([]);
 
-    useEffect(() => {
-        fetch(`http://localhost:8080/api/call-history/${id}`)
-            .then(response => response.json())
-            .then(data => setCallDetail(data))
-            .catch(error => console.error('Error fetching call details:', error));
-    }, [id]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+        const response = await axios.get(`http://192.168.0.4:8080/api/call-history/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setMessages(response.data.messages);
+      } catch (error) {
+        console.error('Error fetching call detail:', error);
+      }
+    };
+  
+    fetchData();
+  }, [id]);
 
-    if (!callDetail) return <Text>Loading...</Text>;
+  const renderMessage = ({ item }) => (
+    <View style={[
+      styles.messageBubble,
+      item.sender === 'user' ? styles.user : styles.other
+    ]}>
+      <Text style={styles.text}>{item.content}</Text>
+    </View>
+  );
 
-    return (
-        <View style={{ padding: 20 }}>
-            <Button title="Go Back" onPress={() => navigation.goBack()} />
-            <Text style={{ fontSize: 24, fontWeight: 'bold', marginVertical: 20 }}>Call Detail</Text>
-            <View>
-                {callDetail.messages.map((msg, index) => (
-                    <Text
-                        key={index}
-                        style={{ textAlign: msg.sender === 'caller' ? 'left' : 'right', marginBottom: 10 }}
-                    >
-                        {msg.text}
-                    </Text>
-                ))}
-            </View>
-        </View>
-    );
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>통화 내용</Text>
+      <FlatList
+        data={messages}
+        renderItem={renderMessage}
+        keyExtractor={(item, index) => index.toString()}
+        contentContainerStyle={{ paddingBottom: 20 }}
+      />
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#fff', padding: 20 },
+  title: { fontSize: 24, fontWeight: 'bold', color: '#355DFF', marginBottom: 16 },
+  messageBubble: {
+    maxWidth: '80%',
+    padding: 10,
+    marginVertical: 6,
+    borderRadius: 10,
+  },
+  text: { fontSize: 16 },
+  user: {
+    backgroundColor: '#355DFF',
+    alignSelf: 'flex-end',
+    borderTopRightRadius: 0,
+  },
+  other: {
+    backgroundColor: '#eee',
+    alignSelf: 'flex-start',
+    borderTopLeftRadius: 0,
+  },
+});
 
 export default CallDetailScreen;

@@ -1,18 +1,18 @@
 import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
-    hansFont: {
-    fontFamily: 'BlackHanSans-Regular',
-    fontWeight: 'normal',
+hansFont: {
+    fontFamily: 'Black Han Sans',
+    fontWeight: '900',
     fontSize: 30,
 },
 ubuntuBold: {
-    fontFamily: 'Ubuntu-Regular',
-    fontWeight: 'bold',
+    fontFamily: 'Ubuntu',
+    fontWeight: '900',
     fontStyle: 'normal',
 },
 font1: {
-    fontFamily: 'BlackHanSans-Regular',
+    fontFamily: 'Black Han Sans',
     fontWeight: 'normal',
     fontSize: 30,
     color: 'red',
