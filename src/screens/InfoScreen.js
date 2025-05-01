@@ -1,102 +1,86 @@
 import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import Header from "../components/Header";
 
-function InfoScreen() {
-    const [user, setUser] = useState({
-        username: ""
-    });
+const InfoScreen = () => {
+  const [user, setUser] = useState({ name: '', email: '' });
 
-    useEffect(() => {
-        const token = localStorage.getItem('token');
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+        const response = await axios.get('http://192.168.0.4:8080/api/info', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+        });
 
-        if (token) {
-            axios.get('http://localhost:8080/api/info', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-                .then((response) => {
-                    setUser({
-                        username: response.data.username,
-                    });
-                })
-                .catch((error) => {
-                    console.error("Error fetching user data:", error);
-                });
+        setUser(response.data);
+      } catch (error) {
+        if (error && typeof error === 'object' && 'message' in error) {
+          console.error('Error fetching call history:', error.message);
+        } else {
+          console.error('Unexpected error:', error);
         }
-    }, []);
-
-    const handlePasswordChange = () => {
-        alert("비밀번호가 변경되었습니다.");
+      }
     };
 
-    return (
-        <div style={styles.container}>
-            <div style = {styles.sectionTop}>
-                <p><strong>이름</strong><span style={{marginLeft: '30px'}}>{user.username}</span></p>
-                <button onClick={handlePasswordChange} style={styles.button}>
-                    비밀번호 변경
-                </button>
-            </div>
+    fetchUser();
+  }, []);
 
-            <div style={styles.sectionBottom}>
-                <ul style={styles.navList}>
-                    <li style={styles.navItem}><a href="/terms">이용 약관</a></li>
-                    <li><a href="/privacy">개인정보 처리 방침</a></li>
-                </ul>
-            </div>
-        </div>
-    );
-}
+  return (
+    <View style={styles.container}>
+      <Header/>
 
-const styles = {
-    navList: {
-        display: 'flex',
-        alignItems: 'center',
-        listStyleType: 'none',
-        flexDirection: 'column',
-        margin: 0,
-        padding: 0,
-    },
-    navItem: {
-       padding: '20px',
-    },
-    container: {
-        width: '80%', // 화면 너비의 80%
-        height: '80vh',
-        maxWidth: "500px",
-        margin: "auto",
-        padding: "20px",
-        border: "1px solid #ddd",
-        borderRadius: "8px",
-        boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
-        display: 'flex',
-        flexDirection: 'column',
+      <View style={styles.infoBox}>
+        <View style={styles.row}>
+          <Text style={styles.label}>사용자 이름</Text>
+          <Text style={styles.value}>{user.name}</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>이메일</Text>
+          <Text style={styles.value}>{user.email}</Text>
+        </View>
+      </View>
 
-    },
-    sectionTop: {
-        top:0,
-        padding: "20px"
-    },
-    sectionBottom: {
-        marginTop: 'auto',
-    },
-    input: {
-        width: "100%",
-        padding: "10px",
-        marginTop: "5px",
-        border: "1px solid #ccc",
-        borderRadius: "4px"
-    },
-    button: {
-        marginTop: "10px",
-        padding: "10px 15px",
-        backgroundColor: "#007bff",
-        color: "white",
-        border: "none",
-        borderRadius: "4px",
-        cursor: "pointer"
-    }
+      <TouchableOpacity style={styles.button}>
+        <Text style={styles.buttonText}>비밀번호 변경</Text>
+      </TouchableOpacity>
+
+      <View style={styles.footer}>
+        <TouchableOpacity style={styles.footerItem}>
+          <Text style={styles.footerText}>이용약관</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.footerItem}>
+          <Text style={styles.footerText}>개인정보 처리 방침</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 };
 
 export default InfoScreen;
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#fff', padding: 20 },
+  infoBox: {
+    borderTopWidth: 1, borderBottomWidth: 1, borderColor: '#ddd',
+    paddingVertical: 10, marginBottom: 30,
+  },
+  row: {
+    flexDirection: 'row', justifyContent: 'space-between',
+    paddingVertical: 12, paddingHorizontal: 4,
+  },
+  label: { fontSize: 16, color: '#555' },
+  value: { fontSize: 16, fontWeight: '600', color: '#111' },
+  button: {
+    backgroundColor: '#ccc', alignSelf: 'center',
+    paddingVertical: 8, paddingHorizontal: 20, borderRadius: 8, marginBottom: 40,
+  },
+  buttonText: { color: '#000', fontWeight: 'bold' },
+  footer: { borderTopWidth: 1, borderColor: '#eee' },
+  footerItem: { paddingVertical: 16, borderBottomWidth: 1, borderColor: '#eee' },
+  footerText: { fontSize: 16, textAlign: 'center', color: '#333' },
+});

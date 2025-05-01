@@ -69,9 +69,9 @@ const LoginScreen = ({ navigation, setIsLoggedIn }) => {
         <Text style={styles.buttonText}>로그인</Text>
       </TouchableOpacity>
 
-      {/* <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
+      <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
         <Text style={styles.linkText}>비밀번호를 잊으셨나요?</Text>
-      </TouchableOpacity> */}
+      </TouchableOpacity>
 
       <Button onPress={() => navigation.navigate("Signup")}>
         <ButtonText>회원가입</ButtonText>
@@ -118,6 +118,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     marginRight: 10,
+    tintColor: "#aaa",
   },
   input: {
     flex: 1,
@@ -140,10 +141,14 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#355DFF",
     fontWeight: "bold",
+
   },
   linkText: {
     color: "white",
     marginTop: 10,
+    marginBottom: 15,
+    textDecorationLine: "underline",
+    fontSize: 14,
   },
 });
 
