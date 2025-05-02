@@ -5,7 +5,7 @@ import axios from 'axios';
 import Header from "../components/Header";
 
 const InfoScreen = () => {
-  const [user, setUser] = useState({ name: '', email: '' });
+  const [user, setUser] = useState({email: '' });
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -31,33 +31,30 @@ const InfoScreen = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <> 
       <Header/>
-
-      <View style={styles.infoBox}>
-        <View style={styles.row}>
-          <Text style={styles.label}>사용자 이름</Text>
-          <Text style={styles.value}>{user.name}</Text>
+      <View style={styles.container}>
+        <View style={styles.infoBox}>
+          <View style={styles.row}>
+            <Text style={styles.label}>이메일</Text>
+            <Text style={styles.value}>{user.email}</Text>
+          </View>
         </View>
-        <View style={styles.row}>
-          <Text style={styles.label}>이메일</Text>
-          <Text style={styles.value}>{user.email}</Text>
+
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>비밀번호 변경</Text>
+        </TouchableOpacity>
+
+        <View style={styles.footer}>
+          <TouchableOpacity style={styles.footerItem}>
+            <Text style={styles.footerText}>이용약관</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.footerItem}>
+            <Text style={styles.footerText}>개인정보 처리 방침</Text>
+          </TouchableOpacity>
         </View>
       </View>
-
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>비밀번호 변경</Text>
-      </TouchableOpacity>
-
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.footerItem}>
-          <Text style={styles.footerText}>이용약관</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.footerItem}>
-          <Text style={styles.footerText}>개인정보 처리 방침</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </>
   );
 };
 

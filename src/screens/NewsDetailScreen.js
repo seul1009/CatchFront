@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, Text, StyleSheet, View, TouchableOpacity } from 'react-native';
+import { ScrollView, Text, StyleSheet, View, TouchableOpacity, SafeAreaView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -11,10 +11,10 @@ export default function NewsDetailScreen() {
   const contentLines = content?.split('\n') || [];
 
   return (
-    <>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
     <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Text style={{ fontSize: 16 }}>← </Text>
+            <Text style={styles.backButton}> ← </Text>
         </TouchableOpacity>
     </View>
      
@@ -46,34 +46,39 @@ export default function NewsDetailScreen() {
         })}
       </View>
     </ScrollView>
-    </>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingVertical: 15,
-        paddingHorizontal: 10,
-        marginTop:30,
-        borderBottomWidth: 2,
-        borderColor: '#355DFF',
-        backgroundColor: '#fff',
-      },
+  header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: 15,
+      paddingHorizontal: 10,
+      marginTop:30,
+      borderBottomWidth: 2,
+      borderColor: '#355DFF',
+    },
+  backButton: {
+    fontSize: 24,
+    color: '#000',
+    marginRight: 10,
+  },
   container: {
-    marginTop:20,
     paddingVertical: 20,
     paddingHorizontal: 20,
-    backgroundColor: '#fff',
   },
   title: {
+    marginTop:20,
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
     color: '#222',
+    
   },
   contentContainer: {
+    marginTop:20,
     flexDirection: 'column',
     gap: 8,
   },
