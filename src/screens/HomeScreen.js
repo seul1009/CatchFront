@@ -10,6 +10,13 @@ import CatImage from '../assets/img/home2.png';
 function HomeScreen() {
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
+    const [newsList, setNewsList] = useState([]);
+
+    const newsImages = [
+      require('../assets/img/news/news1.png'),
+      require('../assets/img/news/news2.png'),
+      require('../assets/img/news/news3.png')
+    ];
 
     const navigation = useNavigation();
     useEffect(() => {
@@ -42,7 +49,26 @@ function HomeScreen() {
             }
         };
 
+        
+        const getNews = async () => {
+          try {
+            const token = await AsyncStorage.getItem('token'); 
+
+            const res = await axios.get('http://192.168.0.4:8080/api/news', {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+
+            setNewsList(res.data);
+          } catch (e) {
+            console.error('뉴스 로드 실패:', e);
+          }
+        };
+
+
         getData();
+        getNews();
     }, []);
 
     return (
@@ -60,19 +86,19 @@ function HomeScreen() {
                 </View>
             </View>
             <Image source={CatImage} style={styles.cat} />
-            <TouchableOpacity onPress={() => navigation.navigate('PhishingDetail', {
-                title: '뉴스1',
-                content: '뉴스1 상세 내용입니다...'
-                })}>
-                <Image source={require('../assets/img/news/news1.png')} style={styles.newsImage} />
-                </TouchableOpacity>
+            {newsList.slice(0, 3).map((item, index) => (
+            <TouchableOpacity
+              key={item.id || index}
+              onPress={() =>
+                navigation.navigate('NewsDetail', {
+                  title: item.title,
+                  content: item.content,
+                })
+              }>
+              <Image source={newsImages[index]} style={styles.newsImage} />
+            </TouchableOpacity>
+          ))}
 
-                <TouchableOpacity onPress={() => navigation.navigate('PhishingDetail', {
-                title: '뉴스2',
-                content: '뉴스2 상세 내용입니다...'
-                })}>
-                <Image source={require('../assets/img/news/news2.png')} style={styles.newsImage} />
-                </TouchableOpacity>
             </ScrollView>
         </>
       );
@@ -109,18 +135,19 @@ function HomeScreen() {
             marginLeft:30,
         },
         cat: {
-        width: 300,
-        height: 300,
-        alignSelf: 'center',
+          width: 300,
+          height: 300,
+          alignSelf: 'center',
         },
 
         newsImage: {
-            width: 400,
-            height: 230, 
-            resizeMode: 'contain',
-            alignSelf: 'center',
-            marginBottom: -10,
-          },
+          width: '70%',         
+          aspectRatio: 16 / 9, 
+          resizeMode: 'contain',
+          alignSelf: 'center',
+          marginTop: -30,
+          marginBottom: -30,
+        },
     
       });
 
