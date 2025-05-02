@@ -15,6 +15,8 @@ import HomeIcon from '../assets/img/home.png';
 import CallIcon from '../assets/img/call.png';
 import ReportIcon from '../assets/img/report.png';
 import InfoIcon from '../assets/img/info.png';
+import CallDetailScreen from '../screens/CallDetailScreen';
+import NewsDetailScreen from '../screens/NewsDetailScreen';
 
 
 const Stack = createStackNavigator();
@@ -86,7 +88,8 @@ const StackNavigator = ({ isLoggedIn, setIsLoggedIn }) => {
           <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
         </>
       )}
-    
+    <Stack.Screen name="NewsDetail" component={NewsDetailScreen} />
+    <Stack.Screen name="CallDetail" component={CallDetailScreen}/>
     </Stack.Navigator>
   );
 };
