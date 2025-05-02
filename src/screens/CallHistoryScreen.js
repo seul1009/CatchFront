@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   },
   date: { fontSize: 14, color: '#888' },
   number: { fontSize: 16, fontWeight: 'bold' },
-  risk: { color: 'red', fontWeight: 'bold', marginTop: 4 },
+  percent: { color: 'red', fontWeight: 'bold', marginTop: 4 },
   button: {
     marginTop: 8,
     alignSelf: 'flex-end',
