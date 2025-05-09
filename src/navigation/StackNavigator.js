@@ -18,6 +18,7 @@ import CallDetailScreen from '../screens/CallDetailScreen';
 import NewsDetailScreen from '../screens/NewsDetailScreen';
 import TermsScreen from '../screens/TermsScreen';
 import PrivacyPolicyScreen from '../screens/PrivacyPolicyScreen';
+import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 
 
 const Stack = createStackNavigator();
@@ -97,6 +98,7 @@ const StackNavigator = ({ isLoggedIn, setIsLoggedIn }) => {
       <Stack.Screen name="Info" component={InfoScreen} />
       <Stack.Screen name="Terms" component={TermsScreen} />
       <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
+      <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen}/>
     </Stack.Navigator>
   );
 };
