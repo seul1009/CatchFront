@@ -63,15 +63,14 @@ const styles = StyleSheet.create({
     paddingTop: 80,
   },
   title: {
-    fontSize: 30,
+    fontSize: 35,
     fontFamily: 'BlackHanSans-Regular',
-    fontWeight: 'bold',
   },
   report: {
-    fontSize: 30,
+    fontSize: 35,
     fontFamily: 'BlackHanSans-Regular',
-    fontWeight: 'bold',
-    marginBottom: 15,
+    paddingTop: 25,
+    paddingBottom: 15,
     color:'red'
   },
   icon: {
@@ -85,7 +84,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#aaa',
     borderRadius: 12,
-    marginTop: 60,
+    marginTop: 50,
     paddingHorizontal: 5,
     backgroundColor: '#fff',
   },

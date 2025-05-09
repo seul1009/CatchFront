@@ -6,9 +6,8 @@ import { Image } from 'react-native';
 
 import LoginScreen from '../screens/LoginScreen';
 import SignupScreen from '../screens/SignupScreen';
-import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import HomeScreen from '../screens/HomeScreen';
-import CallHistoryScreen from '../screens/CallHistoryScreen';
+import CallHistoryScreen from '../screens/CallHistoryScreen2';
 import ReportScreen from '../screens/ReportScreen';
 import InfoScreen from '../screens/InfoScreen';
 import HomeIcon from '../assets/img/home.png';
@@ -17,12 +16,14 @@ import ReportIcon from '../assets/img/report.png';
 import InfoIcon from '../assets/img/info.png';
 import CallDetailScreen from '../screens/CallDetailScreen';
 import NewsDetailScreen from '../screens/NewsDetailScreen';
+import TermsScreen from '../screens/TermsScreen';
+import PrivacyPolicyScreen from '../screens/PrivacyPolicyScreen';
 
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const BottomTabNavigator = () => {
+const BottomTabNavigator = ({ setIsLoggedIn }) => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -67,7 +68,9 @@ const BottomTabNavigator = () => {
       <Tab.Screen name="홈" component={HomeScreen} />
       <Tab.Screen name="통화 내역" component={CallHistoryScreen} />
       <Tab.Screen name="신고" component={ReportScreen} />
-      <Tab.Screen name="정보" component={InfoScreen} />
+      <Tab.Screen name="정보">
+        {() => <InfoScreen setIsLoggedIn={setIsLoggedIn} />}
+      </Tab.Screen>
     </Tab.Navigator>
   );
 };
@@ -77,7 +80,9 @@ const StackNavigator = ({ isLoggedIn, setIsLoggedIn }) => {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {isLoggedIn ? (
         <>
-          <Stack.Screen name="BottomTabs" component={BottomTabNavigator} />
+          <Stack.Screen name="BottomTabs">
+            {() => <BottomTabNavigator setIsLoggedIn={setIsLoggedIn} />}
+          </Stack.Screen>
         </>
       ) : (
         <>
@@ -85,11 +90,13 @@ const StackNavigator = ({ isLoggedIn, setIsLoggedIn }) => {
             {(props) => <LoginScreen {...props} setIsLoggedIn={setIsLoggedIn} />}
           </Stack.Screen>
           <Stack.Screen name="Signup" component={SignupScreen} />
-          <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
         </>
       )}
-    <Stack.Screen name="NewsDetail" component={NewsDetailScreen} />
-    <Stack.Screen name="CallDetail" component={CallDetailScreen}/>
+      <Stack.Screen name="NewsDetail" component={NewsDetailScreen} />
+      <Stack.Screen name="CallDetail" component={CallDetailScreen}/>
+      <Stack.Screen name="Info" component={InfoScreen} />
+      <Stack.Screen name="Terms" component={TermsScreen} />
+      <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
     </Stack.Navigator>
   );
 };

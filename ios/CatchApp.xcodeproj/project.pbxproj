@@ -15,7 +15,6 @@
 		E036C56DB204460794088EAF /* Ubuntu-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6A7E454290574AC98E22A6F6 /* Ubuntu-Bold.ttf */; };
 		23E5ADE88870480FB5570649 /* Ubuntu-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F455AF11037C42D9BDC8342E /* Ubuntu-Light.ttf */; };
 		D6BAFD8EB4C6434AA2F32C27 /* Ubuntu-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6C7F8667DCF644E180CBAAF9 /* Ubuntu-Medium.ttf */; };
-		16FE5EA28188488FBC7E5C4D /* font.js in Resources */ = {isa = PBXBuildFile; fileRef = 2DF1C6E4C5324E7DA25CDB8E /* font.js */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,7 +43,6 @@
 		6A7E454290574AC98E22A6F6 /* Ubuntu-Bold.ttf */ = {isa = PBXFileReference; name = "Ubuntu-Bold.ttf"; path = "../src/assets/fonts/Ubuntu-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		F455AF11037C42D9BDC8342E /* Ubuntu-Light.ttf */ = {isa = PBXFileReference; name = "Ubuntu-Light.ttf"; path = "../src/assets/fonts/Ubuntu-Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		6C7F8667DCF644E180CBAAF9 /* Ubuntu-Medium.ttf */ = {isa = PBXFileReference; name = "Ubuntu-Medium.ttf"; path = "../src/assets/fonts/Ubuntu-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		2DF1C6E4C5324E7DA25CDB8E /* font.js */ = {isa = PBXFileReference; name = "font.js"; path = "../src/assets/fonts/font.js"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,7 +132,6 @@
 				6A7E454290574AC98E22A6F6 /* Ubuntu-Bold.ttf */,
 				F455AF11037C42D9BDC8342E /* Ubuntu-Light.ttf */,
 				6C7F8667DCF644E180CBAAF9 /* Ubuntu-Medium.ttf */,
-				2DF1C6E4C5324E7DA25CDB8E /* font.js */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -213,7 +210,6 @@
 				E036C56DB204460794088EAF /* Ubuntu-Bold.ttf in Resources */,
 				23E5ADE88870480FB5570649 /* Ubuntu-Light.ttf in Resources */,
 				D6BAFD8EB4C6434AA2F32C27 /* Ubuntu-Medium.ttf in Resources */,
-				16FE5EA28188488FBC7E5C4D /* font.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

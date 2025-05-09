@@ -1,28 +1,32 @@
-import { View, Text, StyleSheet } from 'react-native';
+import React from 'react';
+import { View, Image, StyleSheet } from 'react-native';
 
 function Header() {
-    return (
-        <View style={styles.header}>
-            <Text style={styles.logo}>Catch</Text>
-        </View>
-    );
+  return (
+    <View style={styles.header}>
+      <Image
+        source={require('../assets/img/logo.png')}
+        style={[styles.logo, { tintColor: '#355DFF' }]}
+        />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    header: {
-        width: '100%',
-        paddingVertical: 20,
-        borderBottomWidth: 1,
-        borderBottomColor: 'rgba(0,0,0,0.5)',
-        backgroundColor: '#fff',
-      },
-    logo: {
-        color: '#355DFF',
-        paddingLeft: 20,
-        paddingTop: 30,
-        fontSize: 35,
-        fontWeight: '700',
-    }
+  header: {
+    width: '100%',
+    paddingTop: 35,
+    paddingLeft: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: '#fff',
+    alignItems: 'flex-start',
+  },
+  logo: {
+    width: 85,
+    height: 85,
+    resizeMode: 'contain',
+  },
 });
 
 export default Header;
