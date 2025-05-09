@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import Header from "../components/Header";
 import HomeImage from '../assets/img/home1.png';
-import CatImage from '../assets/img/home2.png';
+import CatImage from '../assets/img/cat.jpg';
 
 function HomeScreen() {
     const [message, setMessage] = useState('');
@@ -75,17 +75,19 @@ function HomeScreen() {
         <>
           <Header />
             <ScrollView style = {styles.Color}>
-            <Image source={HomeImage} style={styles.icon} />
+            <Image source={HomeImage} style={styles.home1} />
             <View style={styles.container}>
                 <Text style={styles.Text1}>보이스피싱 의심 건</Text>
                 <View style={styles.row}>
                     <Text style={styles.Text2}>
-                        <Text style={{ fontSize: 35, fontWeight: 'bold', color: 'red' }}>{message}</Text>
-                        <Text style={{ fontSize: 30, fontWeight: 'bold' }}> 개를 발견했어요</Text>
+                        <Text style={{ fontSize: 35, color: 'red' }}>{message}</Text>
+                        <Text> 개를 발견했어요</Text>
                     </Text>
                 </View>
             </View>
-            <Image source={CatImage} style={styles.cat} />
+            <View style={{ marginBottom: 30 }}>
+              <Image source={CatImage} style={styles.cat} />
+            </View>
             {newsList.slice(0, 3).map((item, index) => (
             <TouchableOpacity
               key={item.id || index}
@@ -112,13 +114,16 @@ function HomeScreen() {
           flex: 1,
           backgroundColor: '#fff',
           alignItems: 'center',
-          paddingTop: 30,
+          padding: 50,
         },
-        icon: {
-          width: 150,
-          height: 150,
+        home1: {
+          position: 'absolute',
+          top: 100,
+          left: 9,
+          width: 100,
+          height: 100,
           resizeMode: 'contain',
-          marginBottom: 10,
+          zIndex: 10,
         },
         row: {
           flexDirection: 'row',
@@ -126,20 +131,21 @@ function HomeScreen() {
           marginTop: 10,
         },
         Text1: {
-          fontSize: 30,
-          fontWeight: 900,
-          color: '#000',
-          marginRight:30,
+          fontSize: 32,
+          marginRight: 45,
+          fontFamily: 'BlackHanSans-Regular',
         },
         Text2: {
-            marginLeft:30,
+          fontSize: 32,
+          marginLeft: 45,
+          fontFamily: 'BlackHanSans-Regular',
         },
         cat: {
-          width: 300,
-          height: 300,
+          width: 280,   
+          height: 336,  
           alignSelf: 'center',
+          paddingBottom: 40,
         },
-
         newsImage: {
           width: '70%',         
           aspectRatio: 16 / 9, 
