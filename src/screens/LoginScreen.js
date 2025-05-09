@@ -28,7 +28,12 @@ const LoginScreen = ({ navigation, setIsLoggedIn }) => {
         throw new Error("토큰이 응답에 없습니다.");
       }
     } catch (error) {
-      console.error("Login failed:", error);
+      if (error.response && error.response.status === 401) {
+        const message = error.response.data?.message || "로그인 실패: 아이디 또는 비밀번호를 확인하세요.";
+        setErrorMessage(message);
+      } else {
+        setErrorMessage("서버 오류가 발생했습니다. 다시 시도해주세요.");
+      }
       setErrorMessage("로그인 실패: 아이디 또는 비밀번호를 확인하세요.");
     }
   };

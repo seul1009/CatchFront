@@ -131,12 +131,12 @@ function HomeScreen() {
           marginTop: 10,
         },
         Text1: {
-          fontSize: 32,
+          fontSize: 35,
           marginRight: 45,
           fontFamily: 'BlackHanSans-Regular',
         },
         Text2: {
-          fontSize: 32,
+          fontSize: 35,
           marginLeft: 45,
           fontFamily: 'BlackHanSans-Regular',
         },

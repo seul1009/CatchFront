@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, InteractionManager} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
@@ -47,21 +47,23 @@ const InfoScreen = ( { setIsLoggedIn } ) => {
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
-              Alert.alert(
-                '로그아웃',
-                '로그아웃하시겠어요?',
-                [
-                  { text: '취소', style: 'cancel' },
-                  {
-                    text: '확인',
-                    onPress: async () => {
-                      await AsyncStorage.removeItem('token');
-                      setIsLoggedIn(false);
+              InteractionManager.runAfterInteractions(() => {
+                Alert.alert(
+                  '로그아웃',
+                  '로그아웃하시겠어요?',
+                  [
+                    {
+                      text: '확인',
+                      onPress: async () => {
+                        await AsyncStorage.removeItem('token');
+                        setIsLoggedIn(false);
+                      },
                     },
-                  },
-                ],
-                { cancelable: true }
-              );
+                    { text: '취소', style: 'cancel' },
+                  ],
+                  { cancelable: true }
+                );
+              });
             }}
           >
             <Text style={styles.buttonText}>로그아웃</Text>
@@ -77,34 +79,32 @@ const InfoScreen = ( { setIsLoggedIn } ) => {
           </TouchableOpacity>
           <TouchableOpacity style={styles.footerItem}
             onPress={() => {
-              Alert.alert(
-                '회원 탈퇴',
-                '정말 탈퇴하시겠어요? 탈퇴 시 되돌릴 수 없습니다.',
-                [
-                  { text: '취소', style: 'cancel' },
-                  {
-                    text: '탈퇴',
-                    style: 'destructive',
-                    onPress: async () => {
-                      try {
-                        const token = await AsyncStorage.getItem('token');
-                        await axios.delete('http://192.168.0.4:8080/user', {
-                          headers: { Authorization: `Bearer ${token}` },
-                        });
-                        await AsyncStorage.removeItem('token');
-                        setIsLoggedIn(false);
-                        navigation.reset({
-                          index: 0,
-                          routes: [{ name: 'Login' }],
-                        });
-                      } catch (error) {
-                        console.error('탈퇴 실패:', error);
-                      }
+              setTimeout(() => {
+                Alert.alert(
+                  '회원 탈퇴',
+                  '정말 탈퇴하시겠어요? 탈퇴 시 되돌릴 수 없습니다.',
+                  [
+                    {
+                      text: '탈퇴',
+                      style: 'destructive',
+                      onPress: async () => {
+                        try {
+                          const token = await AsyncStorage.getItem('token');
+                          await axios.delete('http://192.168.0.4:8080/user', {
+                            headers: { Authorization: `Bearer ${token}` },
+                          });
+                          await AsyncStorage.removeItem('token');
+                          setIsLoggedIn(false);
+                        } catch (error) {
+                          console.error('탈퇴 실패:', error);
+                        }
+                      },
                     },
-                  },
-                ],
-                { cancelable: true }
-              );
+                    { text: '취소', style: 'cancel' },
+                  ],
+                  { cancelable: true }
+                );
+              }, 100);
             }}
           >
             <Text style={styles.footerText}>탈퇴하기</Text>

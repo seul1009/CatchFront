@@ -41,7 +41,7 @@ const SignupScreen = () => {
     }
 
     try {
-      await axios.post("http://192.168.0.4:8080/auth/signup", {
+      await axios.post("http://192.168.0.4:8080/user/signup", {
         email: formData.email,
         password: formData.password
       });
@@ -56,7 +56,7 @@ const SignupScreen = () => {
   const sendConfirmCode = async () => {
     if (!formData.email) return Alert.alert("오류", "이메일을 입력해주세요.");
     try {
-      await axios.post("http://192.168.0.4:8080/auth/send", { email: formData.email });
+      await axios.post("http://192.168.0.4:8080/user/send", { email: formData.email });
       setConfirmCodeSent(true);
       Alert.alert("인증 코드 전송", "인증 코드가 발송되었습니다!");
     } catch (error) {
@@ -66,7 +66,7 @@ const SignupScreen = () => {
 
   const confirmCode = async () => {
     try {
-      const res = await axios.post("http://192.168.0.4:8080/auth/code", {
+      const res = await axios.post("http://192.168.0.4:8080/user/code", {
         email: formData.email,
         confirmCode: formData.confirmCode
       });
