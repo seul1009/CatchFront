@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { View,Text,TextInput,TouchableOpacity,StyleSheet,Image, Alert } from "react-native";
 import { useNavigation } from '@react-navigation/native';
@@ -20,6 +20,28 @@ const SignupScreen = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [confirmCodeSent, setConfirmCodeSent] = useState(false);
   const [confirmCodeCheckSent, setConfirmCodeCheckSent] = useState(false);
+  const [timer, setTimer] = useState(0);
+  const intervalRef = useRef(null);
+ 
+   useEffect(() => {
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current); 
+    };
+  }, []);
+
+  const startTimer = () => {
+    setTimer(300); // 5분
+    intervalRef.current = setInterval(() => {
+      setTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(intervalRef.current);
+          setConfirmCodeSent(false);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
 
   const handleInputChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
@@ -53,17 +75,22 @@ const SignupScreen = () => {
     }
   };
 
+
   const sendConfirmCode = async () => {
     if (!formData.email) return Alert.alert("오류", "이메일을 입력해주세요.");
     try {
       await axios.post("http://192.168.0.4:8080/user/send", { email: formData.email });
       setConfirmCodeSent(true);
+      setConfirmCodeCheckSent(false); // 이전 인증 여부 초기화
+      startTimer();
       Alert.alert("인증 코드 전송", "인증 코드가 발송되었습니다!");
     } catch (error) {
-      setErrorMessage("인증 코드 발송에 실패했습니다.");
+      const msg = error.response?.data || "인증 코드 발송에 실패했습니다.";
+      setErrorMessage(msg); 
     }
   };
 
+  
   const confirmCode = async () => {
     try {
       const res = await axios.post("http://192.168.0.4:8080/user/code", {
@@ -84,7 +111,7 @@ const SignupScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.logoWrapper}>
-        <Logo />
+        <Logo style={{ tintColor: '#355DFF' }} />
       </View>
 
       <View style={styles.inputRow}>
@@ -110,6 +137,11 @@ const SignupScreen = () => {
             value={formData.confirmCode}
             onChangeText={(text) => handleInputChange("confirmCode", text)}
           />
+          {timer > 0 && (
+            <Text style={styles.timerText}>
+              {Math.floor(timer / 60)}:{(timer % 60).toString().padStart(2, "0")}
+            </Text>
+          )}
         </View>
         <TouchableOpacity style={styles.sideButton} onPress={confirmCode}>
           <Text style={styles.buttonText}>확인</Text>
@@ -138,7 +170,12 @@ const SignupScreen = () => {
         />
       </View>
 
-      {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+      <View style={{ height: 20, marginTop: 10 }}>
+        <Text style={{ color: 'red', fontSize: 15 }}>
+          {errorMessage}
+        </Text>
+      </View>
+
 
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>회원가입</Text>
@@ -156,7 +193,9 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   logoWrapper: {
-    marginBottom: 40,
+    alignContent: "center",
+    justifyContent: "center",
+    paddingBottom: 70,
   },
   inputContainer: {
     flexDirection: "row",
@@ -165,14 +204,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     marginBottom: 10,
-    width: 250,
+    width: 280,
     borderWidth: 1,
     borderColor: "#aaa",
   },
   inputRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 10,
+    marginBottom: 15,
   },
   inputBox: {
     flexDirection: "row",
@@ -180,7 +219,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 5,
     paddingHorizontal: 10,
-    width: 200,
+    width: 225,
     height: 40,
     borderWidth: 1,
     borderColor: "#aaa",
@@ -204,12 +243,11 @@ const styles = StyleSheet.create({
   input: {
     height: 40,
     color: "#333",
-    width: 140,
+    flex: 1,
   },
   buttonText: {
     color: "white",
-    fontWeight: "bold",
-    fontSize: 12,
+    fontSize: 14,
   },
   button: {
     backgroundColor: "#355dff",
@@ -217,12 +255,12 @@ const styles = StyleSheet.create({
     width: 250,
     borderRadius: 5,
     alignItems: "center",
-    marginTop: 20,
+    marginTop: 40,
   },
-  errorText: {
-    color: "red",
-    fontSize: 14,
-    marginTop: 10,
+  timerText: {
+  color: "#355dff",
+  fontSize: 15,
+  marginLeft: 10,
   },
 });
 

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useCallback  } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from "react-native";
+import { useFocusEffect } from '@react-navigation/native';
 import axios from "axios";
 import styled from "styled-components/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -11,6 +12,12 @@ const LoginScreen = ({ navigation, setIsLoggedIn }) => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errorMessage, setErrorMessage] = useState("");
 
+  useFocusEffect(
+    useCallback(() => {
+      setErrorMessage("");
+    }, [])
+  );
+  
   const handleInputChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
   };
@@ -68,8 +75,11 @@ const LoginScreen = ({ navigation, setIsLoggedIn }) => {
         />
       </View>
 
-      {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
-
+      <View style={{ height: 20, marginTop: 5 }}>
+        {errorMessage ? (
+          <Text style={{ color: "red", fontSize: 15 }}>{errorMessage}</Text>
+        ) : null}
+      </View>
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>로그인</Text>
       </TouchableOpacity>
@@ -108,14 +118,16 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   logoWrapper: {
-    marginBottom:50,
+    alignContent: "center",
+    justifyContent: "center",
+    paddingBottom: 70,
   },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#fff",
     borderRadius: 5,
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
     marginBottom: 10,
     width: 250,
   },
@@ -129,11 +141,6 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 40,
     color: "#333",
-  },
-  errorText: {
-    color: "red",
-    fontSize: 14,
-    marginTop: 5,
   },
   button: {
     backgroundColor: "white",

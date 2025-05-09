@@ -1,17 +1,20 @@
 import React from 'react';
-import styled from 'styled-components/native';
+import { Image, StyleSheet } from 'react-native';
+import logoImage from '../assets/img/logo.png';
 
-const Title = styled.Text`
-    color: ${props => props.color || '#355DFF'};
-    font-size: 60px;
-    font-weight: 700;
-    font-family: "Ubuntu-Bold";
-`;
-
-export default function Logo({ color }) {
-    return (
-        <Title color={color}>
-            Catch
-        </Title>
-    );
+export default function Logo(props) {
+  return (
+    <Image
+      source={logoImage}
+      style={[styles.logo, props.style]}
+      resizeMode="contain"
+    />
+  );
 }
+
+const styles = StyleSheet.create({
+  logo: {
+    width: 180,
+    height: 180,
+  },
+});
