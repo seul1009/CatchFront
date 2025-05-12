@@ -22,6 +22,7 @@ const SignupScreen = () => {
   const [confirmCodeCheckSent, setConfirmCodeCheckSent] = useState(false);
   const [timer, setTimer] = useState(0);
   const intervalRef = useRef(null);
+  const [verifiedEmail, setVerifiedEmail] = useState("");
  
    useEffect(() => {
     return () => {
@@ -45,14 +46,20 @@ const SignupScreen = () => {
 
   const handleInputChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
+    setErrorMessage("");
   };
 
   const handleSubmit = async () => {
     const { email, confirmCode, password, confirmPassword } = formData;
-    if (!email || !confirmCode || !password || !confirmPassword) {
-      setErrorMessage("모든 필드를 입력해주세요.");
-      return;
-    }
+    if (
+      !email.trim() || 
+      !confirmCode.trim() || 
+      !password.trim() || 
+      !confirmPassword.trim()
+    ) {
+    setErrorMessage("모든 필드를 입력해주세요.");
+    return;
+    } 
     if (password !== confirmPassword) {
       setErrorMessage("비밀번호가 일치하지 않습니다.");
       return;
@@ -62,15 +69,28 @@ const SignupScreen = () => {
       return;
     }
 
+    if (!verifiedEmail || formData.email !== verifiedEmail) {
+      setErrorMessage("이메일을 다시 인증해주세요.");
+      return;
+}
+
     try {
       await axios.post("http://192.168.0.4:8080/user/signup", {
-        email: formData.email,
+        email: verifiedEmail,
         password: formData.password
       });
+      console.log({
+      email: formData.email,
+      verifiedEmail,
+      confirmCodeCheckSent,
+      confirmCodeSent
+    });
       Alert.alert("회원가입 완료", "회원가입이 성공적으로 완료되었습니다!");
+      setErrorMessage("");
       navigation.navigate("Login");
     } catch (error) {
-      const msg = error.response?.data?.message || "회원가입에 실패했습니다.";
+      const data = error.response?.data;
+      const msg = typeof data === "string" ? data : data?.message || "회원가입에 실패했습니다.";
       setErrorMessage(msg);
     }
   };
@@ -82,7 +102,9 @@ const SignupScreen = () => {
       await axios.post("http://192.168.0.4:8080/user/send", { email: formData.email });
       setConfirmCodeSent(true);
       setConfirmCodeCheckSent(false); // 이전 인증 여부 초기화
+      setVerifiedEmail(""); 
       startTimer();
+
       Alert.alert("인증 코드 전송", "인증 코드가 발송되었습니다!");
     } catch (error) {
       const msg = error.response?.data || "인증 코드 발송에 실패했습니다.";
@@ -99,7 +121,15 @@ const SignupScreen = () => {
       });
       if (res.data === true) {
         setConfirmCodeCheckSent(true);
+        setVerifiedEmail(formData.email);
+
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current); 
+          intervalRef.current = null;         
+        }
+        setTimer(0);
         Alert.alert("성공", "이메일 인증이 완료되었습니다.");
+        setErrorMessage("");
       } else {
         setErrorMessage("인증 코드가 올바르지 않습니다.");
       }

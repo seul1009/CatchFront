@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // 개발 중 로그인 건너뜀 (이후 false로 수정)
+  
   useEffect(() => {
     const customTextProps = {
       style: {
