@@ -11,6 +11,8 @@ const ForgotPasswordScreen = ({ navigation }) => {
   const [codeVerified, setCodeVerified] = useState(false);
   const [timer, setTimer] = useState(0);
   const intervalRef = useRef(null);
+  const [verifiedEmail, setVerifiedEmail] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useFocusEffect(
     useCallback(() => {
@@ -19,6 +21,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
       setNewPassword("");
       setCodeSent(false);
       setCodeVerified(false);
+      setErrorMessage("");
       setTimer(0);
       if (intervalRef.current) clearInterval(intervalRef.current);
     }, [])
@@ -48,12 +51,14 @@ const ForgotPasswordScreen = ({ navigation }) => {
     if (!email) return Alert.alert("오류", "이메일을 입력해주세요.");
     try {
       await axios.post("http://192.168.0.4:8080/user/send-for-reset", { email });
-      Alert.alert("인증코드 전송", "이메일로 인증코드를 보냈습니다.");
+      Alert.alert("인증 코드 전송", "인증 코드가 발송되었습니다!");
       setCodeSent(true);
       setCodeVerified(false);
       startTimer();
+      setVerifiedEmail("");
+      setErrorMessage("");
     } catch (error) {
-      Alert.alert("오류", error.response?.data || "서버 오류");
+      setErrorMessage(error.response?.data || "인증 코드 발송에 실패했습니다.");
     }
   };
 
@@ -61,27 +66,47 @@ const ForgotPasswordScreen = ({ navigation }) => {
     try {
       const res = await axios.post("http://192.168.0.4:8080/user/code", { email, confirmCode });
       if (res.data === true) {
-        Alert.alert("확인", "인증이 완료되었습니다.");
+        Alert.alert("확인", "이메일 인증이 완료되었습니다.");
         setCodeVerified(true);
         clearInterval(intervalRef.current); // 인증 성공 시 타이머 정지
+        setVerifiedEmail(email);
+        setErrorMessage("");
       } else {
-        Alert.alert("오류", "인증코드가 올바르지 않습니다.");
-      }
-    } catch (error) {
-      Alert.alert("오류", error.response?.data || "서버 오류");
-    }
+        setErrorMessage("인증 코드가 올바르지 않습니다.");
+        }
+      } catch (error) {
+        setErrorMessage(error.response?.data || "이메일 인증에 실패했습니다.");
+        }
   };
 
   const handleResetPassword = async () => {
     if (!newPassword) return Alert.alert("오류", "새 비밀번호를 입력해주세요.");
+    if (!verifiedEmail || email !== verifiedEmail) {
+      Alert.alert("오류", "이메일을 다시 인증해주세요.");
+      return;
+    }
+
     try {
       await axios.post("http://192.168.0.4:8080/user/reset", { email, newPassword });
+      setErrorMessage("");
       Alert.alert("완료", "비밀번호가 재설정되었습니다.");
       navigation.reset({ index: 0, routes: [{ name: "Login" }] });
-    } catch {
-      Alert.alert("오류", "비밀번호 재설정 실패");
+    } catch (error) {
+    const data = error.response?.data;
+    const msg = typeof data === "string"
+      ? data
+      : data?.message || "비밀번호 재설정 중 알 수 없는 오류가 발생했습니다.";
+    setErrorMessage(msg);
+  }
+};
+
+  useEffect(() => {
+    if (codeVerified && email !== verifiedEmail) {
+      setErrorMessage("이메일이 변경되었습니다. 다시 인증해주세요.");
+      setCodeVerified(false);
+      setVerifiedEmail("");
     }
-  };
+  }, [email]);
 
   return (
     <View style={styles.container}>
@@ -141,6 +166,11 @@ const ForgotPasswordScreen = ({ navigation }) => {
           <Text style={styles.buttonText}>비밀번호 재설정</Text>
         </TouchableOpacity>
       </View>
+      <View style={{ height: 20, marginTop: 10 }}>
+        <Text style={{ color: 'red', fontSize: 15, textAlign: 'center' }}>
+          {errorMessage}
+        </Text>
+      </View>
     </View>
   );
 };
@@ -150,15 +180,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    padding: 20,
   },
   formWrapper: {
     width: "100%",
-    maxWidth: 250,
+    maxWidth: 270,
   },
   title: {
     fontSize: 20,
-    marginBottom: 20,
+    marginBottom: 40,
     fontWeight: "bold",
     textAlign: "center",
   },
@@ -180,7 +209,7 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 5,
     alignItems: "center",
-    marginBottom: 10,
+    marginBottom: 20,
   },
   buttonText: {
     color: "#fff",

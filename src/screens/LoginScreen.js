@@ -88,9 +88,9 @@ const LoginScreen = ({ navigation, setIsLoggedIn }) => {
         <Text style={styles.linkText}>비밀번호를 잊으셨나요?</Text>
       </TouchableOpacity>
 
-      <Button onPress={() => navigation.navigate("Signup")}>
-        <ButtonText>회원가입</ButtonText>
-      </Button>
+      <TouchableOpacity style={styles.signupButton} onPress={() => navigation.navigate("Signup")}>
+        <Text style={styles.signupButtonText}>회원가입</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -105,8 +105,9 @@ export const Button = styled.TouchableOpacity`
 `;
 
 export const ButtonText = styled.Text`
-  color: white;
+  color: #355DFF;
   font-weight: bold;
+  font-size: 18px;
 `;
 
 const styles = StyleSheet.create({
@@ -153,7 +154,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#355DFF",
     fontWeight: "bold",
-
   },
   linkText: {
     color: "white",
@@ -161,6 +161,18 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textDecorationLine: "underline",
     fontSize: 14,
+  },
+  signupButton: {
+    backgroundColor: "#5C7CFF",
+    padding: 10,
+    width: 80,
+    borderRadius: 5,
+    alignItems: "center",
+    marginTop: 20,
+  },
+  signupButtonText: {
+    color: "#ffffff",
+    fontWeight: "bold",
   },
 });
 
