@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/overlay_bubble_bg"
+    android:padding="12dp"
+    android:elevation="8dp"
+    android:gravity="center_horizontal"
+    android:layout_marginTop="32dp"
+    android:layout_marginStart="12dp">
+
+    <TextView
+        android:id="@+id/appName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Catch"
+        android:textStyle="bold"
+        android:textColor="#355DFF"
+        android:textSize="18sp"
+        android:layout_gravity="start" />
+
+    <TextView
+        android:id="@+id/promptText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="보이스피싱을 검사하시려면\n녹음 버튼을 눌러주세요"
+        android:textColor="#000000"
+        android:textSize="14sp"
+        android:layout_marginTop="6dp"
+        android:layout_gravity="center_horizontal" /> 
+
+    <Button
+        android:id="@+id/closeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="닫기" />
+</LinearLayout>

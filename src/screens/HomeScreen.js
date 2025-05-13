@@ -147,8 +147,7 @@ function HomeScreen() {
           paddingBottom: 40,
         },
         newsImage: {
-          width: '70%',         
-          aspectRatio: 16 / 9, 
+          width: '80%',         
           resizeMode: 'contain',
           alignSelf: 'center',
           marginTop: -30,

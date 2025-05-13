@@ -48,9 +48,12 @@ const ForgotPasswordScreen = ({ navigation }) => {
   };
 
   const handleSendCode = async () => {
-    if (!email) return Alert.alert("오류", "이메일을 입력해주세요.");
+    if (!email.trim()) {
+      setErrorMessage("이메일을 입력해주세요.");
+      return;
+   }
     try {
-      await axios.post("http://192.168.0.4:8080/user/send-for-reset", { email });
+      await axios.post("http://192.168.0.4:8080/user/send-for-reset", { email: email.trim() });
       Alert.alert("인증 코드 전송", "인증 코드가 발송되었습니다!");
       setCodeSent(true);
       setCodeVerified(false);
@@ -64,7 +67,10 @@ const ForgotPasswordScreen = ({ navigation }) => {
 
   const handleVerifyCode = async () => {
     try {
-      const res = await axios.post("http://192.168.0.4:8080/user/code", { email, confirmCode });
+      const res = await axios.post("http://192.168.0.4:8080/user/code", { 
+        email: email.trim(),
+        confirmCode: confirmCode.trim(),
+      });
       if (res.data === true) {
         Alert.alert("확인", "이메일 인증이 완료되었습니다.");
         setCodeVerified(true);
@@ -82,12 +88,15 @@ const ForgotPasswordScreen = ({ navigation }) => {
   const handleResetPassword = async () => {
     if (!newPassword) return Alert.alert("오류", "새 비밀번호를 입력해주세요.");
     if (!verifiedEmail || email !== verifiedEmail) {
-      Alert.alert("오류", "이메일을 다시 인증해주세요.");
+      setErrorMessage("이메일을 다시 인증해주세요.");
       return;
     }
 
     try {
-      await axios.post("http://192.168.0.4:8080/user/reset", { email, newPassword });
+      await axios.post("http://192.168.0.4:8080/user/reset", { 
+        email: email.trim(),
+        newPassword: newPassword.trim(),
+      });
       setErrorMessage("");
       Alert.alert("완료", "비밀번호가 재설정되었습니다.");
       navigation.reset({ index: 0, routes: [{ name: "Login" }] });
