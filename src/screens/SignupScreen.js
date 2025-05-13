@@ -50,16 +50,14 @@ const SignupScreen = () => {
   };
 
   const handleSubmit = async () => {
-    const { email, confirmCode, password, confirmPassword } = formData;
-    if (
-      !email.trim() || 
-      !confirmCode.trim() || 
-      !password.trim() || 
-      !confirmPassword.trim()
-    ) {
-    setErrorMessage("모든 필드를 입력해주세요.");
-    return;
-    } 
+    const email = formData.email.trim();
+    const confirmCode = formData.confirmCode.trim();
+    const password = formData.password.trim();
+    const confirmPassword = formData.confirmPassword.trim();
+    if (!email || !confirmCode || !password || !confirmPassword) {
+      setErrorMessage("모든 필드를 입력해주세요.");
+      return;
+   }
     if (password !== confirmPassword) {
       setErrorMessage("비밀번호가 일치하지 않습니다.");
       return;
@@ -69,22 +67,17 @@ const SignupScreen = () => {
       return;
     }
 
-    if (!verifiedEmail || formData.email !== verifiedEmail) {
+    if (!verifiedEmail || formData.email.trim() !== verifiedEmail.trim()) {
       setErrorMessage("이메일을 다시 인증해주세요.");
       return;
 }
 
     try {
       await axios.post("http://192.168.0.4:8080/user/signup", {
-        email: verifiedEmail,
-        password: formData.password
+        email: verifiedEmail.trim(),
+        password
       });
-      console.log({
-      email: formData.email,
-      verifiedEmail,
-      confirmCodeCheckSent,
-      confirmCodeSent
-    });
+     
       Alert.alert("회원가입 완료", "회원가입이 성공적으로 완료되었습니다!");
       setErrorMessage("");
       navigation.navigate("Login");
@@ -97,46 +90,55 @@ const SignupScreen = () => {
 
 
   const sendConfirmCode = async () => {
-    if (!formData.email) return Alert.alert("오류", "이메일을 입력해주세요.");
-    try {
-      await axios.post("http://192.168.0.4:8080/user/send", { email: formData.email });
-      setConfirmCodeSent(true);
-      setConfirmCodeCheckSent(false); // 이전 인증 여부 초기화
-      setVerifiedEmail(""); 
-      startTimer();
+  const email = formData.email.trim();
 
-      Alert.alert("인증 코드 전송", "인증 코드가 발송되었습니다!");
-    } catch (error) {
-      const msg = error.response?.data || "인증 코드 발송에 실패했습니다.";
-      setErrorMessage(msg); 
-    }
-  };
+  if (!email.trim()) {
+    setErrorMessage("오류", "이메일을 입력해주세요.");
+    return;
+  }
 
-  
-  const confirmCode = async () => {
-    try {
-      const res = await axios.post("http://192.168.0.4:8080/user/code", {
-        email: formData.email,
-        confirmCode: formData.confirmCode
-      });
-      if (res.data === true) {
-        setConfirmCodeCheckSent(true);
-        setVerifiedEmail(formData.email);
+  try {
+    await axios.post("http://192.168.0.4:8080/user/send", { email });
+    setConfirmCodeSent(true);
+    setConfirmCodeCheckSent(false);
+    setVerifiedEmail(""); 
+    startTimer();
 
-        if (intervalRef.current) {
-          clearInterval(intervalRef.current); 
-          intervalRef.current = null;         
-        }
-        setTimer(0);
-        Alert.alert("성공", "이메일 인증이 완료되었습니다.");
-        setErrorMessage("");
-      } else {
-        setErrorMessage("인증 코드가 올바르지 않습니다.");
+    Alert.alert("인증 코드 전송", "인증 코드가 발송되었습니다!");
+  } catch (error) {
+    const msg = error.response?.data || "인증 코드 발송에 실패했습니다.";
+    setErrorMessage(msg); 
+  }
+};
+
+const confirmCode = async () => {
+  const email = formData.email.trim();
+  const confirmCode = formData.confirmCode.trim();
+
+  try {
+    const res = await axios.post("http://192.168.0.4:8080/user/code", {
+      email,
+      confirmCode
+    });
+
+    if (res.data === true) {
+      setConfirmCodeCheckSent(true);
+      setVerifiedEmail(email);
+
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current); 
+        intervalRef.current = null;         
       }
-    } catch (error) {
-      setErrorMessage("이메일 인증에 실패했습니다.");
+      setTimer(0);
+      Alert.alert("성공", "이메일 인증이 완료되었습니다.");
+      setErrorMessage("");
+    } else {
+      setErrorMessage("인증 코드가 올바르지 않습니다.");
     }
-  };
+  } catch (error) {
+    setErrorMessage("이메일 인증에 실패했습니다.");
+  }
+};
 
   return (
     <View style={styles.container}>
@@ -152,6 +154,7 @@ const SignupScreen = () => {
             placeholder="이메일"
             value={formData.email}
             onChangeText={(text) => handleInputChange("email", text)}
+            editable={!confirmCodeCheckSent}  // 인증 완료 후 비활성화
           />
         </View>
         <TouchableOpacity style={styles.sideButton} onPress={sendConfirmCode}>

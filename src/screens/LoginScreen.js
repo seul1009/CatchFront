@@ -23,10 +23,18 @@ const LoginScreen = ({ navigation, setIsLoggedIn }) => {
   };
 
   const handleSubmit = async () => {
+    const email = formData.email.trim();
+    const password = formData.password.trim();
+
+    if (!email || !password) {
+      setErrorMessage("이메일과 비밀번호를 모두 입력해주세요.");
+      return;
+    }
+
     try {
-      const response = await axios.post("http://192.168.0.4:8080/user/login", formData, {
-        headers: { "Content-Type": "application/json" },
-      });
+      const response = await axios.post("http://192.168.0.4:8080/user/login", { email, password }, {
+      headers: { "Content-Type": "application/json" },
+    });
 
       if (response.data.token) {
         await AsyncStorage.setItem("token", response.data.token);
@@ -41,7 +49,6 @@ const LoginScreen = ({ navigation, setIsLoggedIn }) => {
       } else {
         setErrorMessage("서버 오류가 발생했습니다. 다시 시도해주세요.");
       }
-      setErrorMessage("로그인 실패: 아이디 또는 비밀번호를 확인하세요.");
     }
   };
 
