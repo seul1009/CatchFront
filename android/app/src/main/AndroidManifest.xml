@@ -29,7 +29,8 @@
              android:exported="false" />
              
     <activity android:name=".OverlayPermissionActivity"
-              android:theme="@android:style/Theme.Dialog" />
+              android:exported="true"
+              android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
       <activity
         android:name=".MainActivity"
