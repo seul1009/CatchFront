@@ -10,22 +10,21 @@ import android.view.View;
 import android.view.LayoutInflater;
 import android.widget.Button;
 import android.os.Build;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 
 public class OverlayPermissionActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_overlay_permission, null);
+        CustomDialog dialog = new CustomDialog(this);
 
-        AlertDialog dialog = new AlertDialog.Builder(this)
-            .setView(dialogView)
-            .setCancelable(false)
-            .create();
+        // 버튼 바인딩
+        Button goSettingsBtn = dialog.findViewById(R.id.goSettingsBtn);
+        Button cancelBtn = dialog.findViewById(R.id.cancelBtn);
 
-        Button goSettingsBtn = dialogView.findViewById(R.id.goSettingsBtn);
-        Button cancelBtn = dialogView.findViewById(R.id.cancelBtn);
-
+        // 클릭 이벤트 설정
         goSettingsBtn.setOnClickListener(v -> {
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                 Uri.parse("package:" + getPackageName()));
@@ -39,8 +38,8 @@ public class OverlayPermissionActivity extends Activity {
             finish();
         });
 
+        // 다이얼로그 띄우기
         dialog.show();
-    
-    }
+            }
 
 }
