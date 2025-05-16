@@ -54,6 +54,8 @@ const LoginScreen = ({ navigation, setIsLoggedIn }) => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.text}> 보이스피싱을 잡다.</Text>
+      <View style={styles.separator} />
       <View style={styles.logoWrapper}>
         <Logo color="white" />
       </View>
@@ -125,10 +127,21 @@ const styles = StyleSheet.create({
     backgroundColor: "#355DFF",
     padding: 20,
   },
+  text: {
+    fontSize: 30,
+    fontFamily: 'BlackHanSans-Regular',
+    color: '#FEF842'
+  },
+  separator: {
+    width: 150,
+    height: 1,
+    backgroundColor: '#fff',
+    margin: 15,
+  },
   logoWrapper: {
     alignContent: "center",
     justifyContent: "center",
-    paddingBottom: 70,
+    paddingBottom: 50,
   },
   inputContainer: {
     flexDirection: "row",
