@@ -14,24 +14,64 @@ import android.net.Uri;
 import android.app.AlertDialog;
 import android.widget.Toast;
 import android.util.Log;
+import com.catchapp.OverlayPermissionActivity; 
+import com.catchapp.R;
+import android.os.Environment;
+import android.os.FileObserver;
+import java.io.File;
+import android.os.Handler;
+import android.os.Looper;
+import android.widget.TextView;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import com.catchapp.recording.FileUploader;
 
 public class RecordPromptService extends Service {
     private WindowManager windowManager;
     private View floatingView;
+    private FileObserver observer;
+
+    private static final String CHANNEL_ID = "record_service_channel";
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
-            showCustomOverlayPermissionDialog();
-        } else {
-            showFloatingPrompt();
+        Log.i("RecordPromptService", "onStartCommand 호출됨");
+        
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                CHANNEL_ID,
+                "통화 녹음 안내",
+                NotificationManager.IMPORTANCE_LOW
+            );
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            if (manager != null) {
+                manager.createNotificationChannel(channel);
+            }
+
+            Notification notification = new Notification.Builder(this, CHANNEL_ID)
+                .setContentTitle("CatchApp")
+                .setContentText("통화 중 녹음 안내 표시 중...")
+                .setSmallIcon(R.mipmap.ic_launcher) 
+                .build();
+
+            startForeground(1, notification);
         }
-        return START_NOT_STICKY;
-    }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+                Log.d("OverlayCheck", "OverlayPermissionActivity 호출 시도");
+                Intent permissionIntent = new Intent(this, OverlayPermissionActivity.class);
+                permissionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(permissionIntent);
+            } else {
+                showFloatingPrompt();
+            }
+
+            return START_NOT_STICKY;
+        }
 
     private void showFloatingPrompt() {
         if (floatingView != null) return;
-        floatingView = LayoutInflater.from(this).inflate(R.layout.record_prompt_overlay, null);
+            floatingView = LayoutInflater.from(this).inflate(R.layout.record_prompt_overlay, null);
 
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
@@ -43,15 +83,15 @@ public class RecordPromptService extends Service {
                 PixelFormat.TRANSLUCENT);
 
         params.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
-        params.x = 0;    // 중앙 정렬이므로 x는 0
-        params.y = 100;  // 상단 여백 조절
+        params.x = 0;    
+        params.y = 100;  
+        
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         windowManager.addView(floatingView, params);
 
-        // 버튼 클릭 시 오버레이 제거
         floatingView.findViewById(R.id.closeButton).setOnClickListener(v -> {
+            Log.d("RecordPromptService", "녹음 시작됨");
         if (floatingView != null && windowManager != null) {
-            startRecording();
             windowManager.removeView(floatingView);
             floatingView = null;
 
@@ -59,19 +99,60 @@ public class RecordPromptService extends Service {
             stopSelf();
         }
     });
+        File recordingsDir = new File(Environment.getExternalStorageDirectory(), "Recordings/Call");
+        Log.i("RecordPromptService", "감시 경로: " + recordingsDir.getAbsolutePath());
+
+        observer = new FileObserver(recordingsDir.getPath(), 
+        FileObserver.CREATE | FileObserver.MODIFY | FileObserver.MOVED_TO) {
+            @Override
+            public void onEvent(int event, String path) {
+                if (path == null) return;
+
+                File file = new File(recordingsDir, path);
+                if (!file.exists()) return;
+
+                if (event == FileObserver.CREATE || event == FileObserver.MOVED_TO) {
+                    Log.i("RecordWatcher", "녹음 시작됨: " + path);
+                    updateDialogText("녹음 중...");
+                }
+
+                if (event == FileObserver.MODIFY) {
+                    Log.i("RecordWatcher", "파일 수정됨: " + path);
+                    waitAndCheckIfFinished(file);
+                }
+            }
+        };
+        observer.startWatching();
     }
 
-    private void showCustomOverlayPermissionDialog() {
-        Log.d("OverlayCheck", "OverlayPermissionActivity 호출 시도");
-        Intent intent = new Intent(this, OverlayPermissionActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+    private void waitAndCheckIfFinished(File file) {
+        new Thread(() -> {
+            try {
+                long initialSize = file.length();
+                Thread.sleep(5000); // 5초 동안 변화 없으면 녹음 종료 간주
+                long newSize = file.length();
+
+                if (initialSize == newSize) {
+                    Log.i("RecordWatcher", "판별 중");
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        updateDialogText("보이스피싱 판별 중...");
+                    });
+
+                    // 업로드
+                    FileUploader.uploadToServer(file);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
-    private void startRecording() {
-    // TODO: 녹음 시작 로직 추가
-    Log.d("RecordPromptService", "녹음 시작됨");
-}
+    private void updateDialogText(String message) {
+        if (floatingView != null) {
+            TextView promptText = floatingView.findViewById(R.id.promptText);
+            promptText.setText(message);
+        }
+    }
 
     @Override
     public void onDestroy() {
@@ -80,6 +161,10 @@ public class RecordPromptService extends Service {
             windowManager.removeView(floatingView);
             floatingView = null;
         }
+        if (observer != null) {
+            observer.stopWatching();
+            observer = null;
+    }
     }
 
     @Override
