@@ -13,6 +13,7 @@ import android.app.AlertDialog
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
+import android.os.Environment
 
 class MainActivity : ReactActivity() {
     private val REQUEST_CODE = 1001
@@ -27,7 +28,8 @@ class MainActivity : ReactActivity() {
             this,
             arrayOf(
                 Manifest.permission.READ_PHONE_STATE,
-                Manifest.permission.RECORD_AUDIO
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.READ_EXTERNAL_STORAGE
             ),
             REQUEST_CODE
         )
@@ -75,6 +77,17 @@ private fun showPhoneMicPermissionDialog() {
             permissionDialog?.dismiss()
             permissionDialog = null
         }
+        // 외부 저장소 권한 요청
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (!Environment.isExternalStorageManager()) {
+                val intent = Intent(
+                    Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+                    Uri.parse("package:$packageName")
+                )
+                startActivity(intent)
+            }
+        }
+  
     }
 
     private fun hasPhonePermission(): Boolean {

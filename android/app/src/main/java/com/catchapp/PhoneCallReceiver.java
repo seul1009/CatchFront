@@ -12,7 +12,6 @@ public class PhoneCallReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("PhoneCallReceiver", "onReceive 호출됨");
         String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
 
         android.util.Log.d("PhoneCallReceiver", "onReceive: state=" + state);
@@ -36,7 +35,7 @@ public class PhoneCallReceiver extends BroadcastReceiver {
         if (TelephonyManager.EXTRA_STATE_IDLE.equals(state)) {
             if (!wasRinging) {
                 context.stopService(new Intent(context, RecordPromptService.class));
-                android.util.Log.d("PhoneCallReceiver", "통화 종료");
+                android.util.Log.i("PhoneCallReceiver", "통화 종료");
 
             }
         }
