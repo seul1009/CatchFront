@@ -35,8 +35,7 @@ public class RecordPromptService extends Service {
     private static final String CHANNEL_ID = "record_service_channel";
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i("RecordPromptService", "onStartCommand 호출됨");
+    public int onStartCommand(Intent intent, int flags, int startId) { 
         
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
@@ -100,7 +99,6 @@ public class RecordPromptService extends Service {
         }
     });
         File recordingsDir = new File(Environment.getExternalStorageDirectory(), "Recordings/Call");
-        Log.i("RecordPromptService", "감시 경로: " + recordingsDir.getAbsolutePath());
 
         observer = new FileObserver(recordingsDir.getPath(), 
         FileObserver.CREATE | FileObserver.MODIFY | FileObserver.MOVED_TO) {
@@ -113,19 +111,19 @@ public class RecordPromptService extends Service {
 
                 if (event == FileObserver.CREATE || event == FileObserver.MOVED_TO) {
                     Log.i("RecordWatcher", "녹음 시작됨: " + path);
-                    updateDialogText("녹음 중...");
+                    new Handler(Looper.getMainLooper()).post(() -> updateDialogText("녹음 중..."));
                 }
 
                 if (event == FileObserver.MODIFY) {
                     Log.i("RecordWatcher", "파일 수정됨: " + path);
-                    waitAndCheckIfFinished(file);
+                    CheckFinished(file);
                 }
             }
         };
         observer.startWatching();
     }
 
-    private void waitAndCheckIfFinished(File file) {
+    private void CheckFinished(File file) {
         new Thread(() -> {
             try {
                 long initialSize = file.length();
