@@ -24,6 +24,7 @@
         android:id="@+id/promptText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="보이스피싱을 검사하시려면\n녹음 버튼을 눌러주세요"
         android:textColor="#000000"
         android:textSize="14sp"

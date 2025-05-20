@@ -14,7 +14,6 @@ import android.net.Uri;
 import android.app.AlertDialog;
 import android.widget.Toast;
 import android.util.Log;
-import com.catchapp.OverlayPermissionActivity; 
 import com.catchapp.R;
 import android.os.Environment;
 import android.os.FileObserver;
@@ -36,7 +35,14 @@ public class RecordPromptService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) { 
-        
+        boolean isLoggedIn = getSharedPreferences("LoginStatusPrefs", MODE_PRIVATE)
+                           .getBoolean("isLoggedIn", false);
+
+        if (!isLoggedIn) {
+            Log.d("RecordPromptService", "로그인되지 않음. 서비스 종료");
+            stopSelf();
+            return START_NOT_STICKY;
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
                 CHANNEL_ID,
@@ -56,21 +62,16 @@ public class RecordPromptService extends Service {
 
             startForeground(1, notification);
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
-                Log.d("OverlayCheck", "OverlayPermissionActivity 호출 시도");
-                Intent permissionIntent = new Intent(this, OverlayPermissionActivity.class);
-                permissionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(permissionIntent);
-            } else {
-                showFloatingPrompt();
-            }
+        showFloatingPrompt();
 
-            return START_NOT_STICKY;
-        }
+        return START_NOT_STICKY;
+    }
 
     private void showFloatingPrompt() {
+        Log.d("RecordPromptService", "🟡 showFloatingPrompt() 호출됨");
         if (floatingView != null) return;
             floatingView = LayoutInflater.from(this).inflate(R.layout.record_prompt_overlay, null);
+            Log.d("RecordPromptService", "🟢 Layout inflate 완료");
 
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
@@ -87,6 +88,7 @@ public class RecordPromptService extends Service {
         
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         windowManager.addView(floatingView, params);
+        Log.d("RecordPromptService", "✅ 오버레이 뷰 추가됨");
 
         floatingView.findViewById(R.id.closeButton).setOnClickListener(v -> {
             Log.d("RecordPromptService", "녹음 시작됨");
@@ -111,7 +113,7 @@ public class RecordPromptService extends Service {
 
                 if (event == FileObserver.CREATE || event == FileObserver.MOVED_TO) {
                     Log.i("RecordWatcher", "녹음 시작됨: " + path);
-                    new Handler(Looper.getMainLooper()).post(() -> updateDialogText("녹음 중..."));
+                    new Handler(Looper.getMainLooper()).post(() -> updateDialogText("녹음 중... \n 최소 10초를 유지해 주세요.  \n 검사를 원하시면 녹음을 종료해 주세요."));
                 }
 
                 if (event == FileObserver.MODIFY) {
@@ -127,7 +129,7 @@ public class RecordPromptService extends Service {
         new Thread(() -> {
             try {
                 long initialSize = file.length();
-                Thread.sleep(5000); // 5초 동안 변화 없으면 녹음 종료 간주
+                Thread.sleep(3000); // 3초 동안 변화 없으면 녹음 종료 간주
                 long newSize = file.length();
 
                 if (initialSize == newSize) {

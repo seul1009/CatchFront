@@ -1,5 +1,5 @@
 import React, { useState, useCallback  } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert, NativeModules  } from "react-native";
 import { useFocusEffect } from '@react-navigation/native';
 import axios from "axios";
 import styled from "styled-components/native";
@@ -38,6 +38,7 @@ const LoginScreen = ({ navigation, setIsLoggedIn }) => {
 
       if (response.data.token) {
         await AsyncStorage.setItem("token", response.data.token);
+        NativeModules.LoginStatusModule.setLoggedIn(true);
         setIsLoggedIn(true);
       } else {
         throw new Error("토큰이 응답에 없습니다.");

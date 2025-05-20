@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, InteractionManager} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, InteractionManager, NativeModules } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
@@ -56,6 +56,7 @@ const InfoScreen = ( { setIsLoggedIn } ) => {
                       text: '확인',
                       onPress: async () => {
                         await AsyncStorage.removeItem('token');
+                        NativeModules.LoginStatusModule.setLoggedIn(false);
                         setIsLoggedIn(false);
                       },
                     },
@@ -94,6 +95,7 @@ const InfoScreen = ( { setIsLoggedIn } ) => {
                             headers: { Authorization: `Bearer ${token}` },
                           });
                           await AsyncStorage.removeItem('token');
+                          NativeModules.LoginStatusModule.setLoggedIn(false);
                           setIsLoggedIn(false);
                         } catch (error) {
                           console.error('탈퇴 실패:', error);
