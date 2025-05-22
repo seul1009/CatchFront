@@ -14,6 +14,6 @@ class LoginStatusModule(reactContext: ReactApplicationContext) : ReactContextBas
 
     @ReactMethod
     fun setLoggedIn(status: Boolean) {
-        prefs.edit().putBoolean("isLoggedIn", status).apply()
+        prefs.edit().putBoolean("isLoggedIn", status).commit()
     }
 }

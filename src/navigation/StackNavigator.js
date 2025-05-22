@@ -48,7 +48,7 @@ const BottomTabNavigator = ({ setIsLoggedIn }) => {
               style={{
                 width: 24,
                 height: 24,
-                marginBottom: 4, 
+                marginTop: 10, 
                 tintColor: focused ? '#355DFF' : 'gray',
               }}
               resizeMode="contain"
@@ -59,10 +59,11 @@ const BottomTabNavigator = ({ setIsLoggedIn }) => {
         tabBarInactiveTintColor: 'gray',
         tabBarLabelStyle: {
           fontSize: 12,
-          marginBottom: 4, 
+          marginTop: 8, 
+          textAlign: 'center',
         },
         tabBarStyle: {
-          height: 80, 
+          height: 70, 
         },
       })}
     >

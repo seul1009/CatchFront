@@ -35,10 +35,6 @@
     <service android:name=".RecordPromptService"
                 android:foregroundServiceType="mediaProjection"
                 android:exported="false" />
-             
-    <!-- <activity android:name=".OverlayPermissionActivity"
-              android:exported="true"
-              android:theme="@android:style/Theme.Translucent.NoTitleBar"/> -->
 
       <activity
         android:name=".MainActivity"
