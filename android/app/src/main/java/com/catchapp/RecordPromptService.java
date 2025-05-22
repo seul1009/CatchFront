@@ -139,7 +139,9 @@ public class RecordPromptService extends Service {
                     });
 
                     // 업로드
-                    FileUploader.uploadToServer(file);
+                    FileUploader.uploadToServer(file, message -> {
+                        new Handler(Looper.getMainLooper()).post(() -> updateDialogText(message));
+                    });
                 }
             } catch (Exception e) {
                 e.printStackTrace();
