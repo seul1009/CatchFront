@@ -93,7 +93,7 @@ const SignupScreen = () => {
   const email = formData.email.trim();
 
   if (!email.trim()) {
-    setErrorMessage("오류", "이메일을 입력해주세요.");
+    setErrorMessage("이메일을 입력해주세요.");
     return;
   }
 

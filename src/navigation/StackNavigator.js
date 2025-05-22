@@ -79,27 +79,22 @@ const BottomTabNavigator = ({ setIsLoggedIn }) => {
 
 const StackNavigator = ({ isLoggedIn, setIsLoggedIn }) => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {isLoggedIn ? (
-        <>
-          <Stack.Screen name="BottomTabs">
-            {() => <BottomTabNavigator setIsLoggedIn={setIsLoggedIn} />}
-          </Stack.Screen>
-        </>
-      ) : (
-        <>
-          <Stack.Screen name="Login">
-            {(props) => <LoginScreen {...props} setIsLoggedIn={setIsLoggedIn} />}
-          </Stack.Screen>
-          <Stack.Screen name="Signup" component={SignupScreen} />
-        </>
-      )}
+    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={isLoggedIn ? 'BottomTabs' : 'Login'}> 
+      <Stack.Screen name="Login">
+        {(props) => <LoginScreen {...props} setIsLoggedIn={setIsLoggedIn} />}
+      </Stack.Screen>
+
+      <Stack.Screen name="BottomTabs">
+        {() => <BottomTabNavigator setIsLoggedIn={setIsLoggedIn} />}
+      </Stack.Screen>
+      
+      <Stack.Screen name="Signup" component={SignupScreen} />
       <Stack.Screen name="NewsDetail" component={NewsDetailScreen} />
-      <Stack.Screen name="CallDetail" component={CallDetailScreen}/>
+      <Stack.Screen name="CallDetail" component={CallDetailScreen} />
       <Stack.Screen name="Info" component={InfoScreen} />
       <Stack.Screen name="Terms" component={TermsScreen} />
       <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
-      <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen}/>
+      <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
     </Stack.Navigator>
   );
 };

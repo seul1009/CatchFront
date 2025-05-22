@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, Linking, TouchableOpacity, StyleSheet } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Header from "../components/Header";
 import WarningIcon from '../assets/img/warning.png'; 
+import api from '../components/api';
 
 function ReportScreen() {
   const [message, setMessage] = useState('');
@@ -10,25 +10,11 @@ function ReportScreen() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = await AsyncStorage.getItem('token');
-        const response = await fetch('http://192.168.0.4:8080/api/report', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.text();
-        console.log(data);
-        setMessage(data);
-      } catch (error) {
-        console.error('Error:', error?.message || error);
+        const response = await api.get('/report');
+      } catch(error){
+        console.log('API 요청 실패: ', error?.message || error);
       }
     };
-
     fetchData();
   }, []);
 

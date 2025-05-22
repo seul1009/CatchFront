@@ -12,14 +12,12 @@ function CallHistoryScreen() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = await AsyncStorage.getItem('token');
-        const response = await axios.get('http://192.168.0.4:8080/api/call-history', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await api.get('/call-history');
         setCallHistory(response.data);
       } catch (error) {
+        if (error.response?.status === 403 || error.response?.status === 401){
+          console.log('세션 만료');
+        }
         if (error && typeof error === 'object' && 'message' in error) {
           console.error('Error fetching call history:', error.message);
         } else {
