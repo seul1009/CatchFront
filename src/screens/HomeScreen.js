@@ -4,8 +4,8 @@ import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'rea
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import Header from "../components/Header";
-import HomeImage from '../assets/img/home1.png';
 import CatImage from '../assets/img/cat.jpg';
+import api from '../components/api';
 
 function HomeScreen() {
     const [message, setMessage] = useState('');
@@ -22,51 +22,24 @@ function HomeScreen() {
     useEffect(() => {
         const getData = async () => {
             try {
-                const token = await AsyncStorage.getItem('token');
-                console.log(token);
-
-                if (token) {
-                    axios.get('http://192.168.0.4:8080/api/home', {
-                        headers: {
-                            'Authorization': `Bearer ${token}` 
-                        }
-                    })
-                        .then((response) => {
-                            setMessage(response.data);
-                        })
-                        .catch((error) => {
-                            console.error(
-                              error instanceof Error ? error.stack : 'Non-standard error:', error
-                            );
-                            setError('Failed to load data');
-                          });
-
-                } else {
-                    setError('No token found');
-                }
-            } catch (e) {
-                setError('Failed to get token');
+                const response = await api.get('/home');
+                setMessage(response.data);
+                console.log('홈 API 응답:', response.data);
+            } catch(error){
+              console.error(error instanceof Error ? error.stack : 'Non-standard error:', error);
+              setError('홈 데이터 로딩 실패'); 
             }
         };
 
         
         const getNews = async () => {
           try {
-            const token = await AsyncStorage.getItem('token'); 
-
-            const res = await axios.get('http://192.168.0.4:8080/api/news', {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            });
-
+            const res = await api.get('/news');
             setNewsList(res.data);
           } catch (e) {
             console.error('뉴스 로드 실패:', e);
           }
         };
-
-
         getData();
         getNews();
     }, []);
@@ -75,12 +48,11 @@ function HomeScreen() {
         <>
           <Header />
             <ScrollView style = {styles.Color}>
-            <Image source={HomeImage} style={styles.home1} />
             <View style={styles.container}>
                 <Text style={styles.Text1}>보이스피싱 의심 건</Text>
                 <View style={styles.row}>
                     <Text style={styles.Text2}>
-                        <Text style={{ fontSize: 35, color: 'red' }}>{message}</Text>
+                        <Text style={{ fontSize: 37, color: 'red' }}>{message === 0 ? '0' : message}</Text>
                         <Text> 개를 발견했어요</Text>
                     </Text>
                 </View>
@@ -116,19 +88,10 @@ function HomeScreen() {
           alignItems: 'center',
           padding: 50,
         },
-        home1: {
-          position: 'absolute',
-          top: 100,
-          left: 9,
-          width: 100,
-          height: 100,
-          resizeMode: 'contain',
-          zIndex: 10,
-        },
         row: {
           flexDirection: 'row',
           alignItems: 'baseline',
-          marginTop: 10,
+          marginTop: 12,
         },
         Text1: {
           fontSize: 35,
@@ -136,7 +99,7 @@ function HomeScreen() {
           fontFamily: 'BlackHanSans-Regular',
         },
         Text2: {
-          fontSize: 35,
+          fontSize: 36,
           marginLeft: 45,
           fontFamily: 'BlackHanSans-Regular',
         },

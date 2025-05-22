@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView } from
 import axios from 'axios';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
+import api from '../components/api';
 
 function CallDetailScreen() {
   const route = useRoute();
@@ -12,16 +13,15 @@ function CallDetailScreen() {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const token = await AsyncStorage.getItem('token');
-        const response = await axios.get(`http://192.168.0.4:8080/api/call-history/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
+      try { 
+        const response = await api.get(`/call-history/${id}`);
         setMessages(response.data.messages);
       } catch (error) {
-        console.error('Error fetching call detail:', error);
+        if (error.response?.status === 403 || error.response.status === 401){
+          console.log('세션 만료');
+        } else {
+            console.error('통화 내용 불러오기 실패:', error.message);
+        }
       }
     };
   
@@ -70,7 +70,6 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop:30,
     paddingHorizontal: 16,
     paddingVertical: 14,
     borderBottomWidth: 1,

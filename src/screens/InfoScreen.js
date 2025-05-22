@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, InteractionManager, NativeModules } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 import axios from 'axios';
 import Header from "../components/Header";
+import api from '../components/api';
 
 const InfoScreen = ( { setIsLoggedIn } ) => {
   const [user, setUser] = useState({email: '' });
@@ -12,13 +13,7 @@ const InfoScreen = ( { setIsLoggedIn } ) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const token = await AsyncStorage.getItem('token');
-        const response = await axios.get('http://192.168.0.4:8080/api/info', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          },
-        });
-
+        const response = await api.get('/info');
         setUser(response.data);
       } catch (error) {
         if (error && typeof error === 'object' && 'message' in error) {
@@ -58,6 +53,13 @@ const InfoScreen = ( { setIsLoggedIn } ) => {
                         await AsyncStorage.removeItem('token');
                         NativeModules.LoginStatusModule.setLoggedIn(false);
                         setIsLoggedIn(false);
+
+                        navigation.dispatch(
+                          CommonActions.reset({
+                            index: 0,
+                            routes: [{ name: 'Login' }],
+                          })
+                        );
                       },
                     },
                     { text: '취소', style: 'cancel' },
@@ -97,6 +99,13 @@ const InfoScreen = ( { setIsLoggedIn } ) => {
                           await AsyncStorage.removeItem('token');
                           NativeModules.LoginStatusModule.setLoggedIn(false);
                           setIsLoggedIn(false);
+
+                          navigation.dispatch(
+                            CommonActions.reset({
+                              index: 0,
+                              routes: [{ name: 'Login' }],
+                            })
+                          );
                         } catch (error) {
                           console.error('탈퇴 실패:', error);
                         }
