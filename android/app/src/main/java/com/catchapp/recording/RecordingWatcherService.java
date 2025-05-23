@@ -16,7 +16,7 @@ public class RecordingWatcherService extends Service {
         startForegroundService();
 
         String pathToWatch = "/sdcard/Call/"; 
-        observer = new RecordingFileObserver(pathToWatch);
+        observer = new RecordingFileObserver(pathToWatch, getApplicationContext());
         observer.startWatching();
 
         return START_STICKY;

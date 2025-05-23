@@ -12,17 +12,18 @@ public class FileUploader {
         void onResult(String message);
     }
 
-    public static void uploadToServer(File file) {
-        uploadToServer(file, null);
+    public static void uploadToServer(File file, String userId) {
+        uploadToServer(file, userId);
 }
 
-    public static void uploadToServer(File file, FileUploaderCallback callback) {
+    public static void uploadToServer(File file, String userId, FileUploaderCallback callback) {
         OkHttpClient client = new OkHttpClient();
 
         RequestBody body = new MultipartBody.Builder()
             .setType(MultipartBody.FORM)
             .addFormDataPart("audio_file", file.getName(),
                 RequestBody.create(file, MediaType.parse("audio/m4a")))
+            .addFormDataPart("userId", userId)
             .build();
 
         Request request = new Request.Builder()
