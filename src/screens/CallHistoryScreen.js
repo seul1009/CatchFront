@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback  } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import axios from 'axios';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect  } from '@react-navigation/native';
 import Header from "../components/Header";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -9,25 +9,27 @@ function CallHistoryScreen() {
   const navigation = useNavigation();
   const [callHistory, setCallHistory] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await api.get('/call-history');
-        setCallHistory(response.data);
-      } catch (error) {
-        if (error.response?.status === 403 || error.response?.status === 401){
-          console.log('세션 만료');
+  useFocusEffect(
+    useCallback(() => {
+      const fetchData = async () => {
+        try {
+          const response = await api.get('/call-history');
+          setCallHistory(response.data);
+        } catch (error) {
+          if (error.response?.status === 403 || error.response?.status === 401){
+            console.log('세션 만료');
+          }
+          if (error && typeof error === 'object' && 'message' in error) {
+            console.error('Error fetching call history:', error.message);
+          } else {
+            console.error('Unexpected error:', error);
+          }
         }
-        if (error && typeof error === 'object' && 'message' in error) {
-          console.error('Error fetching call history:', error.message);
-        } else {
-          console.error('Unexpected error:', error);
-        }
-      }
-    };
+      };
   
     fetchData();
-  }, []);
+  }, [])
+);
 
   return (
     <> 

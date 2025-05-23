@@ -56,7 +56,6 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       paddingVertical: 15,
       paddingHorizontal: 10,
-      marginTop:30,
       borderBottomWidth: 2,
       borderColor: '#355DFF',
     },
@@ -66,19 +65,16 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   container: {
-    paddingVertical: 20,
     paddingHorizontal: 20,
   },
   title: {
     marginTop:20,
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
     color: '#222',
     
   },
   contentContainer: {
-    marginTop:20,
     flexDirection: 'column',
     gap: 8,
   },
@@ -86,7 +82,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 26,
     color: '#333',
-    marginBottom: 10,
+    marginBottom: 5,
   },
   sectionHeader: {
     fontSize: 17,

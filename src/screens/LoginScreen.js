@@ -40,6 +40,7 @@ const LoginScreen = ({ navigation, setIsLoggedIn }) => {
 
     if (token){
       await AsyncStorage.setItem("token", token);
+      await AsyncStorage.setItem("userId", email);
       setIsLoggedIn(true);
       navigation.reset({
         index: 0,

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback  } from 'react';
 import axios from 'axios';
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect  } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import Header from "../components/Header";
 import CatImage from '../assets/img/cat.jpg';
@@ -19,17 +19,18 @@ function HomeScreen() {
     ];
 
     const navigation = useNavigation();
-    useEffect(() => {
-        const getData = async () => {
-            try {
-                const response = await api.get('/home');
-                setMessage(response.data);
-                console.log('홈 API 응답:', response.data);
-            } catch(error){
-              console.error(error instanceof Error ? error.stack : 'Non-standard error:', error);
-              setError('홈 데이터 로딩 실패'); 
-            }
-        };
+    useFocusEffect(
+      useCallback(() => {
+            const getData = async () => {
+                try {
+                    const response = await api.get('/home');
+                    setMessage(response.data);
+                    console.log('홈 API 응답:', response.data);
+                } catch(error){
+                  console.error(error instanceof Error ? error.stack : 'Non-standard error:', error);
+                  setError('홈 데이터 로딩 실패'); 
+                }
+          };
 
         
         const getNews = async () => {
@@ -42,7 +43,8 @@ function HomeScreen() {
         };
         getData();
         getNews();
-    }, []);
+    }, [])
+  );
 
     return (
         <>
@@ -86,7 +88,8 @@ function HomeScreen() {
           flex: 1,
           backgroundColor: '#fff',
           alignItems: 'center',
-          padding: 50,
+          paddingTop: 50,
+          paddingBottom: 50,
         },
         row: {
           flexDirection: 'row',

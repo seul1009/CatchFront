@@ -68,10 +68,10 @@ public class RecordPromptService extends Service {
     }
 
     private void showFloatingPrompt() {
-        Log.d("RecordPromptService", "🟡 showFloatingPrompt() 호출됨");
+        Log.d("RecordPromptService", " showFloatingPrompt() 호출됨");
         if (floatingView != null) return;
             floatingView = LayoutInflater.from(this).inflate(R.layout.record_prompt_overlay, null);
-            Log.d("RecordPromptService", "🟢 Layout inflate 완료");
+            Log.d("RecordPromptService", " Layout inflate 완료");
 
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
@@ -88,7 +88,7 @@ public class RecordPromptService extends Service {
         
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         windowManager.addView(floatingView, params);
-        Log.d("RecordPromptService", "✅ 오버레이 뷰 추가됨");
+        Log.d("RecordPromptService", " 오버레이 뷰 추가됨");
 
         floatingView.findViewById(R.id.closeButton).setOnClickListener(v -> {
             Log.d("RecordPromptService", "녹음 시작됨");
@@ -138,8 +138,16 @@ public class RecordPromptService extends Service {
                         updateDialogText("보이스피싱 판별 중...");
                     });
 
+                    String userId = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+                                .getString("userId", null);
+                                
+                    if (userId == null) {
+                    Log.e("RecordPromptService", "userId가 SharedPreferences에 없음!");
+                    return;
+                }
+                
                     // 업로드
-                    FileUploader.uploadToServer(file, message -> {
+                    FileUploader.uploadToServer(file, userId, message -> {
                         new Handler(Looper.getMainLooper()).post(() -> updateDialogText(message));
                     });
                 }

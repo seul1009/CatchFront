@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback  } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView } from 'react-native';
 import axios from 'axios';
-import { useRoute, useNavigation } from '@react-navigation/native';
+import { useRoute, useNavigation, useFocusEffect  } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import api from '../components/api';
 
@@ -11,7 +11,8 @@ function CallDetailScreen() {
   const { id } = route.params;
   const [messages, setMessages] = useState([]);
 
-  useEffect(() => {
+  useFocusEffect(
+    useCallback(() => {
     const fetchData = async () => {
       try { 
         const response = await api.get(`/call-history/${id}`);
@@ -26,7 +27,8 @@ function CallDetailScreen() {
     };
   
     fetchData();
-  }, [id]);
+  }, [id])
+);
 
   const renderMessage = ({ item }) => (
     <View style={[
