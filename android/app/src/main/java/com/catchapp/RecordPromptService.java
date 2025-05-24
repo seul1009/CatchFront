@@ -35,14 +35,6 @@ public class RecordPromptService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) { 
-        boolean isLoggedIn = getSharedPreferences("LoginStatusPrefs", MODE_PRIVATE)
-                           .getBoolean("isLoggedIn", false);
-
-        if (!isLoggedIn) {
-            Log.d("RecordPromptService", "로그인되지 않음. 서비스 종료");
-            stopSelf();
-            return START_NOT_STICKY;
-        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
                 CHANNEL_ID,
@@ -62,10 +54,20 @@ public class RecordPromptService extends Service {
 
             startForeground(1, notification);
         }
-        showFloatingPrompt();
 
+        boolean isLoggedIn = getSharedPreferences("LoginStatusPrefs", MODE_PRIVATE)
+                           .getBoolean("isLoggedIn", false);
+
+        if (!isLoggedIn) {
+            Log.d("RecordPromptService", "로그인되지 않음. 서비스 종료");
+            stopSelf();
+            return START_NOT_STICKY;
+        }
+
+        showFloatingPrompt();
         return START_NOT_STICKY;
     }
+         
 
     private void showFloatingPrompt() {
         Log.d("RecordPromptService", " showFloatingPrompt() 호출됨");
@@ -138,11 +140,11 @@ public class RecordPromptService extends Service {
                         updateDialogText("보이스피싱 판별 중...");
                     });
 
-                    String userId = getSharedPreferences("UserPrefs", MODE_PRIVATE)
-                                .getString("userId", null);
+                    String userId = getSharedPreferences("LoginStatusPrefs", MODE_PRIVATE)
+                                        .getString("userId", null);
                                 
                     if (userId == null) {
-                    Log.e("RecordPromptService", "userId가 SharedPreferences에 없음!");
+                    Log.e("RecordPromptService", "userId가 SharedPreferences에 없음");
                     return;
                 }
                 

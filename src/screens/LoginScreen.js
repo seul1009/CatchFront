@@ -11,6 +11,7 @@ import LoginPasswordIcon from "../assets/img/login_password_icon.png";
 const LoginScreen = ({ navigation, setIsLoggedIn }) => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errorMessage, setErrorMessage] = useState("");
+  const { LoginStatusModule } = NativeModules;
 
   useFocusEffect(
     useCallback(() => {
@@ -41,6 +42,10 @@ const LoginScreen = ({ navigation, setIsLoggedIn }) => {
     if (token){
       await AsyncStorage.setItem("token", token);
       await AsyncStorage.setItem("userId", email);
+
+      LoginStatusModule.setLoggedIn(true);
+      LoginStatusModule.setUserId(email);
+
       setIsLoggedIn(true);
       navigation.reset({
         index: 0,

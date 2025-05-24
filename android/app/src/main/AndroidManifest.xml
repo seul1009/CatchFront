@@ -33,7 +33,7 @@
     </receiver>
 
     <service android:name=".RecordPromptService"
-                android:foregroundServiceType="mediaProjection"
+                android:foregroundServiceType="microphone"
                 android:exported="false" />
 
       <activity
