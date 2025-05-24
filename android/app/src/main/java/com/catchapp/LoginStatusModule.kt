@@ -16,4 +16,9 @@ class LoginStatusModule(reactContext: ReactApplicationContext) : ReactContextBas
     fun setLoggedIn(status: Boolean) {
         prefs.edit().putBoolean("isLoggedIn", status).commit()
     }
+
+    @ReactMethod
+    fun setUserId(userId: String) {
+        prefs.edit().putString("userId", userId).commit()
+}
 }

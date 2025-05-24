@@ -23,7 +23,7 @@ public class RecordingFileObserver extends FileObserver {
             File newFile = new File(directory, fileName);
             Log.d(TAG, "녹음 파일 감지됨: " + newFile.getAbsolutePath());
 
-            SharedPreferences prefs = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+            SharedPreferences prefs = context.getSharedPreferences("LoginStatusPrefs", Context.MODE_PRIVATE);
             String userId = prefs.getString("userId", null);
 
             if (userId != null) {
