@@ -13,7 +13,7 @@ public class FileUploader {
     }
 
     public static void uploadToServer(File file, String userId) {
-        uploadToServer(file, userId);
+        uploadToServer(file, userId, null);
 }
 
     public static void uploadToServer(File file, String userId, FileUploaderCallback callback) {
@@ -46,8 +46,10 @@ public class FileUploader {
                     String json = response.body().string();
                     try {
                         JSONObject obj = new JSONObject(json);
-                        String decision = obj.getString("final_decision");
-                        int score = obj.getInt("final_score");
+                        JSONObject speaker = obj.getJSONObject("speaker_me");
+
+                        String decision = speaker.getString("final_decision");
+                        double score = speaker.getDouble("text_score"); 
 
                         String message = decision + "\n보이스피싱 확률: " + score + "%";
                         if (callback != null) {

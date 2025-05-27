@@ -5,8 +5,8 @@ function Header() {
   return (
     <View style={styles.header}>
       <Image
-        source={require('../assets/img/logo.png')}
-        style={[styles.logo, { tintColor: '#355DFF' }]}
+        source={require('../assets/img/catch.png')}
+        style={styles.logo}
         />
     </View>
   );
@@ -15,15 +15,14 @@ function Header() {
 const styles = StyleSheet.create({
   header: {
     width: '100%',
-    paddingLeft: 20,
+    paddingLeft: 25,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0,0,0,0.5)',
+    borderColor: '#ccc',
     backgroundColor: '#fff',
-    alignItems: 'flex-start',
   },
   logo: {
     width: 85,
-    height: 85,
+    height: 70,
     resizeMode: 'contain',
   },
 });

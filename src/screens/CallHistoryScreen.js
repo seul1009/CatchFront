@@ -1,82 +1,117 @@
-import React, { useEffect, useState, useCallback  } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
-import axios from 'axios';
-import { useNavigation, useFocusEffect  } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import Header from "../components/Header";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import api from '../components/api';
 
 function CallHistoryScreen() {
   const navigation = useNavigation();
   const [callHistory, setCallHistory] = useState([]);
 
   useFocusEffect(
-    useCallback(() => {
-      const fetchData = async () => {
-        try {
-          const response = await api.get('/call-history');
-          setCallHistory(response.data);
-        } catch (error) {
-          if (error.response?.status === 403 || error.response?.status === 401){
-            console.log('세션 만료');
-          }
-          if (error && typeof error === 'object' && 'message' in error) {
-            console.error('Error fetching call history:', error.message);
-          } else {
-            console.error('Unexpected error:', error);
-          }
-        }
-      };
-  
+      useCallback(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get('/call-history')
+        setCallHistory(response.data);
+      } catch (error) {
+        console.error('Error fetching call history:', error?.message || error);
+      }
+    };
+
     fetchData();
   }, [])
 );
 
-  return (
-    <> 
-    <Header/>
-    <View style={styles.container}>
-      <Text style={styles.header}>통화 내역</Text>
-      <FlatList
-        data={callHistory}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => navigation.navigate('CallDetail', { id: item.id })}
-            style={styles.item}
-          >
-            <Text style={styles.date}>{item.date}</Text>
-            <Text style={styles.number}>{item.phoneNumber}</Text>
-            <Text style={styles.percent}>보이스피싱 확률 {item.vishingPercent}%</Text>
-            <Text style={styles.button}>내용 보기</Text>
-          </TouchableOpacity>
-        )}
-      />
+  const renderItem = ({ item }) => (
+    <View style={styles.row}>
+      <Text style={[styles.cell, { flex: 1 }]}>{item.date}</Text>
+      <Text style={[styles.cell, { flex: 1.5 }]}>{item.phoneNumber}</Text>
+      <Text style={[styles.cell, item.vishingPercent >= 60 && styles.red, { flex: 1.5 } ]} >{`피싱 확률 ${item.vishingPercent}%`} </Text>
+      <TouchableOpacity onPress={() => navigation.navigate('CallDetail', { id: item.id })} style={{ flex: 1 }}>
+        <View style={styles.button}>
+          <Text style={styles.buttonText}>내용 보기</Text>
+        </View>
+      </TouchableOpacity>
     </View>
+  );
+
+  return (
+    <>
+      <Header />
+      <View style={styles.container}>
+        <Text style={styles.title}>통화 내역</Text>
+        <View style={styles.tableHeader}>
+            <Text style={[styles.headerCell, { flex: 1 }]}>날짜</Text>
+            <Text style={[styles.headerCell, { flex: 1.5 }]}>전화번호</Text>
+            <Text style={[styles.headerCell, { flex: 1.5 }]}>보이스피싱 확률</Text>
+            <Text style={[styles.headerCell, { flex: 1 }]}>통화 내용</Text>
+        </View>
+        <FlatList
+          data={callHistory}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderItem}
+        />
+      </View>
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', padding: 20 },
-  header: { fontSize: 24, fontWeight: 'bold', color: '#355DFF', marginBottom: 16 },
-  item: {
-    padding: 12,
-    borderRadius: 8,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    marginBottom: 10,
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    paddingTop: 10,
   },
-  date: { fontSize: 14, color: '#888' },
-  number: { fontSize: 16, fontWeight: 'bold' },
-  percent: { color: 'red', fontWeight: 'bold', marginTop: 4 },
-  button: {
-    marginTop: 8,
-    alignSelf: 'flex-end',
-    backgroundColor: '#eee',
-    paddingVertical: 4,
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#355DFF',
     paddingHorizontal: 12,
-    borderRadius: 4,
+    marginBottom: 20,
+    paddingLeft: 15,
+  },
+  tableHeader: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    paddingHorizontal: 12,
+    paddingBottom: 8,
+    marginBottom: 8,
+    borderColor: '#ccc',
+  },
+  headerCell: {
+    flex: 1,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontSize: 15,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    borderBottomColor: '#eee',
+    borderBottomWidth: 1,
+    paddingHorizontal: 12,
+  },
+  cell: {
+    flex: 1,
+    fontSize: 13,
+    textAlign: 'center',
+  },
+  red: {
+    color: 'red',
+    fontWeight: 'bold',
+  },
+  button: {
+    backgroundColor: '#eee',
+    paddingVertical: 5,
+    paddingHorizontal: 8,
+    borderRadius: 10,
+    alignSelf: 'center',
+  },
+  buttonText: {
     fontSize: 12,
+    fontWeight: 'bold',
   },
 });
 
