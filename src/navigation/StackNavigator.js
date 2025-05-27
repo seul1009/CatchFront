@@ -7,7 +7,7 @@ import { Image } from 'react-native';
 import LoginScreen from '../screens/LoginScreen';
 import SignupScreen from '../screens/SignupScreen';
 import HomeScreen from '../screens/HomeScreen';
-import CallHistoryScreen from '../screens/CallHistoryScreen2';
+import CallHistoryScreen from '../screens/CallHistoryScreen';
 import ReportScreen from '../screens/ReportScreen';
 import InfoScreen from '../screens/InfoScreen';
 import HomeIcon from '../assets/img/home.png';

@@ -1,10 +1,7 @@
 import React, { useEffect, useState, useCallback  } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView } from 'react-native';
-import axios from 'axios';
 import { useRoute, useNavigation, useFocusEffect  } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import api from '../components/api';
-
 function CallDetailScreen() {
   const route = useRoute();
   const navigation = useNavigation();
@@ -52,11 +49,10 @@ function CallDetailScreen() {
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Text style={styles.backButton}>←</Text>
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Catch</Text>
+          <Text style={styles.title}>통화 내용</Text>
         </View>
 
       <View style={styles.container}>
-        <Text style={styles.title}>통화 내용</Text>
         <FlatList
           data={messages}
           renderItem={renderMessage}
@@ -73,9 +69,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingVertical: 14,
+    paddingVertical: 18,
     borderBottomWidth: 1,
-    borderColor: '#ddd',
+    borderColor: '#ccc',
     backgroundColor: '#fff',
   },
   backButton: {
@@ -84,18 +80,20 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   headerTitle: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    color: '#355DFF',
+    width: 85,
+    height: 70,
+    resizeMode: 'contain',
   },
-  container: { flex: 1,
+  container: { 
+    flex: 1,
     backgroundColor: '#fff',
     padding: 20 
   },
-  title: { fontSize: 24,
+  title: { 
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#355DFF',
-    marginBottom: 16
+    paddingLeft: 10,
   },
   messageBubble: {
     maxWidth: '80%',
