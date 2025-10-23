@@ -8,7 +8,6 @@
 
 ## 💻 개발 환경
 - 클라이언트 개발 플랫폼: React Native (Android 지원, JavaScript 기반) <br>
-- 
 - 개발 언어: Java, Kotlin, JavaScript <br> 
 - IDE: IntelliJ IDEA, VS Code  <br> 
 - DB : MongoDB <br> 
